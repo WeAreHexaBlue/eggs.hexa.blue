@@ -2,7 +2,7 @@
 
 - **Language**: TypeScript
 - **Package Manager**: bun
-- **Add-ons**: prettier, eslint, playwright, tailwindcss, sveltekit-adapter, better-auth, paraglide, ai-tools, drizzle, vitest
+- **Add-ons**: prettier, eslint, playwright, tailwindcss, sveltekit-adapter, drizzle, better-auth, paraglide, ai-tools
 
 ---
 
