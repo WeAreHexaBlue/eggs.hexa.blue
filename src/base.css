@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --font-gsans: "Google Sans Flex", sans-serif;
+
+    --color-blurple: #5965F2;
+    --color-blurple-light: #acb3ff;
+    --color-blurple-dark: #2b327a;
+}
+
+@utility brand {
+    @apply flex items-center gap-2;
+}
+
+@utility title {
+    @apply text-3xl sm:text-5xl font-black;
+}
+
+@utility highlight {
+    @apply text-blurple;
+}
+
+body {
+    @apply bg-mist-900;
+    @apply font-gsans text-white text-center;
+    @apply overflow-x-hidden;
+}
+
+ul {
+    @apply pl-0;
+}
+
+li {
+    @apply list-inside list-disc;
+}

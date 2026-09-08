@@ -2,6 +2,4 @@
     import { m } from "$lib/paraglide/messages";
 </script>
 
-<svelte:head>
-    <title>{m.seggs()}</title>
-</svelte:head>
+<h1>{m.placeholder()}</h1>
