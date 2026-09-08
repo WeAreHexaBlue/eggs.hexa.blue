@@ -1,1 +1,30 @@
 @import "../base.css";
+
+@layer components {
+    .sect {
+        @apply grid justify-center;
+        @apply mx-4 sm:mx-16 my-10 gap-y-3 p-6 lg:p-16 rounded-3xl;
+        @apply bg-mist-800;
+
+        @apply scroll-mt-32 md:scroll-mt-42 scroll-smooth;
+
+        .spangrid {
+            @apply grid gap-6 justify-center xl:justify-stretch mt-3 xl:mt-6;
+
+            span {
+                @apply bg-mist-900 px-6 py-6 rounded-2xl;
+                @apply grid justify-center content-center gap-2;
+
+                @apply transition-transform duration-300 hover:scale-105 hover:drop-shadow-lg;
+            }
+        }
+
+        h1 {
+            @apply text-4xl font-semibold;
+        }
+
+        p {
+            @apply max-w-prose;
+        }
+    }
+}

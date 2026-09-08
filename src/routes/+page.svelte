@@ -9,9 +9,9 @@
     import card2 from "$lib/assets/cards/card2.png";
 
     const cards = [
-        { src: card0, alt: "Promotional Card 1", href: resolve("/") },
-        { src: card1, alt: "Promotional Card 2", href: resolve("/") },
-        { src: card2, alt: "Promotional Card 3", href: resolve("/") }
+        { src: card0, alt: "Promotional Card 1" },
+        { src: card1, alt: "Promotional Card 2" },
+        { src: card2, alt: "Promotional Card 3" }
     ];
 
     let raised = $state<number | null>(null);
@@ -29,19 +29,26 @@
     <title>{m.seggs()}</title>
 </svelte:head>
 <main>
+    {#snippet ctabtn()}
+        <button id="cta" onclick={() => window.open("https://discord.com/discovery/applications/886686500845138041", "_blank")}>
+            {@html m["home.cta.button"]()}
+        </button>
+    {/snippet}
+
     <section class="intro">
         <span class="herosect">
             <h1 class="hero">{m.seggs()}</h1>
-            <p class="text-xl">
-                A silly <b>content-sharing Discord bot</b> that <b>grows your community</b>!
+            <p class="text-lg sm:text-xl">
+                {@html m["home.hero"]()}
             </p>
+            {@render ctabtn()}
         </span>
         <span class="flex items-center justify-center">
             <img src={seggs} class="egg -rotate-12" alt="Egg" />
             <span class="deck">
                 {#each cards as card, i (card.src)}
                     <a
-                        href={card.href}
+                        href={resolve("/#features")}
                         class="card"
                         class:raised={raised === i}
                         style:--slot={i + 1}
@@ -58,6 +65,46 @@
             <img src={seggs} class="egg rotate-12" alt="Egg" />
         </span>
     </section>
+
+    <section id="about" class="sect">
+        <h1>{m["home.about.title"]()}</h1>
+        <p>{@html m["home.about.desc"]()}</p>
+    </section>
+
+    <section id="features" class="sect">
+        <h1>{m["home.features.title"]()}</h1>
+        <span class="spangrid grid-cols-1 xl:grid-cols-3">
+            <span>
+                <h1>{m["home.features.fun.title"]()}</h1>
+                <p>{@html m["home.features.fun.desc"]()}</p>
+            </span>
+            <span>
+                <h1>{m["home.features.customizable.title"]()}</h1>
+                <p>{@html m["home.features.customizable.desc"]()}</p>
+            </span>
+            <span>
+                <h1>{m["home.features.friendly.title"]()}</h1>
+                <p>{@html m["home.features.friendly.desc"]()}</p>
+            </span>
+            <span>
+                <h1>{m["home.features.mod.title"]()}</h1>
+                <p>{@html m["home.features.mod.desc"]()}</p>
+            </span>
+            <span>
+                <h1>{m["home.features.extras.title"]()}</h1>
+                <p>{@html m["home.features.extras.desc"]()}</p>
+            </span>
+            <span>
+                <h1>{m["home.features.premium.title"]()}</h1>
+                <p>{@html m["home.features.premium.desc"]()}</p>
+            </span>
+        </span>
+    </section>
+
+    <section class="sect">
+        <h1>{m["home.cta.title"]()}</h1>
+        {@render ctabtn()}
+    </section>
 </main>
 
 <style lang="postcss">
@@ -71,11 +118,11 @@
     }
 
     .herosect {
-        @apply grid gap-4 px-20 sm:px-0;
+        @apply grid gap-4 px-10 sm:px-0;
     }
 
     .hero {
-        @apply text-5xl sm:text-6xl font-extrabold;
+        @apply text-4xl sm:text-6xl font-extrabold;
     }
 
     .egg {
@@ -134,5 +181,13 @@
         .card {
             transition: none;
         }
+    }
+
+    #cta {
+        @apply bg-blurple hover:bg-blurple-dark mt-3 md:mt-6 p-4 sm:p-6 w-fit justify-self-center;
+        @apply rounded-2xl border border-transparent hover:border-white;
+        @apply text-2xl;
+        @apply transition-transform duration-200 hover:scale-105;
+        @apply cursor-pointer;
     }
 </style>
