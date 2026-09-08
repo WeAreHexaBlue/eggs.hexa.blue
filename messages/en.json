@@ -2,11 +2,17 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 
 	"seggs": "Server Eggs",
+	"hexablue": "HexaBlue",
 
 	"placeholder": "Work in progress...",
 
 	"nav": {
 		"dash": "Dashboard",
-		"support": "Support"
+		"support": "Support",
+		"source": "Source"
+	},
+
+	"footer": {
+		"desc": "<b>Server Eggs</b>, like all HexaBlue software, is free under the <i>GNU General Public License 3.0</i>"
 	}
 }

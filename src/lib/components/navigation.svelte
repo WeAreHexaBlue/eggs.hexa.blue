@@ -38,7 +38,7 @@
 
 {#snippet brand()}
 	<a href={resolve("/")} class="brand" onclick={closeMenu}>
-		<img src={logo} class="size-10 sm:size-15" alt="HexaBlue Logo" />
+		<img src={logo} class="size-10 sm:size-15" alt="Server Eggs Logo" />
 		<h1 class="title">{m.seggs()}</h1>
 	</a>
 {/snippet}
@@ -47,6 +47,7 @@
 	<span class="links" class:vertical>
 		<a href={resolve("/dashboard")} onclick={closeMenu}>{m["nav.dash"]()}</a>
         <a href="https://discord.gg/G9vfEZGZnT" target="_blank" onclick={closeMenu}>{m["nav.support"]()}</a>
+        <a href="https://github.com/WeAreHexaBlue/ServerEggs" target="_blank" onclick={closeMenu}>{m["nav.source"]()}</a>
 	</span>
 {/snippet}
 

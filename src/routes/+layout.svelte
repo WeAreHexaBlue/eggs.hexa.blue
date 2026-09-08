@@ -7,6 +7,7 @@
 	import favicon from "$lib/assets/favicon.svg";
 
 	import Navigation from "$lib/components/navigation.svelte";
+	import Footer from "$lib/components/footer.svelte";
 
 	let { children } = $props();
 </script>
@@ -17,7 +18,7 @@
 	<div class="flex flex-col flex-1 pt-40">
 		{@render children()}
 	</div>
-	<!--<Footer />-->
+	<Footer />
 </div>
 
 <div style="display:none">
