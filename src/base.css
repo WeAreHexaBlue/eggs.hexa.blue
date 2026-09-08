@@ -8,7 +8,16 @@
 
     --color-blurple: #5965F2;
     --color-blurple-light: #acb3ff;
-    --color-blurple-dark: #2b327a;
+    --color-blurple-dark: #333a8f;
+}
+
+@utility bg-bpgrad {
+    background-image: 
+        linear-gradient(
+            180deg,
+            var(--color-blurple),
+            var(--color-blurple-dark)
+        );
 }
 
 @utility brand {
