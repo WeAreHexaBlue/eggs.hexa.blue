@@ -4,13 +4,14 @@
 	"seggs": "Server Eggs",
 	"hexablue": "HexaBlue",
 
-	"placeholder": "Work in progress...",
-
 	"nav": {
 		"dash": "Dashboard",
 		"support": "Support",
 		"source": "Source"
 	},
+	
+	"placeholder": "Work in progress...",
+	"back": "Back",
 
 	"home": {
 		"hero": "A silly <b>content-sharing Discord bot</b> that <b>grows your community</b>!",
