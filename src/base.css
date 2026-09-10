@@ -25,7 +25,7 @@
 }
 
 @utility title {
-    @apply text-3xl sm:text-5xl font-extrabold;
+    @apply text-3xl md:text-5xl font-extrabold;
 }
 
 @utility highlight {
