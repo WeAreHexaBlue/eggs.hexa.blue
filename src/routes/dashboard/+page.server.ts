@@ -1,4 +1,5 @@
 import { protect } from "$lib/server/auth";
+import { redirect } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { guild } from "$lib/server/db/bot-schema";
 import { account } from "$lib/server/db/auth-schema";
@@ -16,7 +17,12 @@ interface DiscordPartialGuild {
     permissions: string;
 }
 
-export async function load({ locals, request }) {
+export async function load({ locals, request, url }) {
+    const newguild = url.searchParams.get("guild_id");
+    if (newguild && /^\d+$/.test(newguild)) {
+        redirect(303, `/dashboard/${newguild}`);
+    }
+
     if (!locals.user) await protect(request, "/dashboard");
 
     const [ discordAccount ] = await db.select().from(account)
@@ -69,7 +75,7 @@ export async function load({ locals, request }) {
             name: g.name,
             icon: g.icon ? `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.${g.icon.startsWith("a_") ? "gif" : "png"}` : null,
             hasBot: botHavingSet.has(g.id),
-            oauth: `https://discord.com/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&response_type=code&permissions=274945330177&integration_type=0&scope=bot+applications.commands&guild_id=${g.id}&disable_guild_select=true&redirect_uri=${encodeURIComponent(env.ORIGIN + `/dashboard/${g.id}`)}`
+            oauth: `https://discord.com/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&response_type=code&permissions=274945330177&integration_type=0&scope=bot+applications.commands&guild_id=${g.id}&disable_guild_select=true&redirect_uri=${encodeURIComponent(env.ORIGIN + `/dashboard`)}`
         }
     });
 

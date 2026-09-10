@@ -64,7 +64,7 @@ export const load: PageServerLoad = async ({ locals, request, params }) => {
     });
 
     if (!guildres.ok) {
-        const oauth = `https://discord.com/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&response_type=code&permissions=274945330177&integration_type=0&scope=bot+applications.commands&guild_id=${params.slug}&disable_guild_select=true&redirect_uri=${encodeURIComponent(env.ORIGIN + `/dashboard/${params.slug}`)}`;
+        const oauth = `https://discord.com/oauth2/authorize?client_id=${env.DISCORD_CLIENT_ID}&response_type=code&permissions=274945330177&integration_type=0&scope=bot+applications.commands&guild_id=${params.slug}&disable_guild_select=true&redirect_uri=${encodeURIComponent(env.ORIGIN + `/dashboard`)}`;
         redirect(302, oauth);
     }
 
