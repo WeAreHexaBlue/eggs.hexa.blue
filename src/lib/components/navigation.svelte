@@ -19,7 +19,7 @@
             provider: "discord",
             callbackURL: resolve("/")
         })
-    }
+    };
 
 	async function logout() {
 		const confirm = window.confirm(m["nav.actions.signout_confirm"]());
@@ -33,7 +33,7 @@
                 }
 			})
 		}
-	}
+	};
 
     const codeToHuman = {
         en: "English",
