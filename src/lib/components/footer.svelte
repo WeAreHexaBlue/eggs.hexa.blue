@@ -20,10 +20,7 @@
             <h1 class="title font-inter font-black hidden md:block">{m.hexablue()}</h1>
         </a>
     </span>
-    <p>{@html m["footer.desc"]()}</p>
-    <!--
-    <p>{@html m["footer.joindc"]({ href: "https://discord.gg/DsARcGwwdM" })}</p>
-    -->
+    <p class="text-gray-300">{@html m["footer.desc"]()}</p>
 </footer>
 
 <style lang="postcss">
@@ -33,7 +30,6 @@
         @apply grid mx-auto mt-auto w-full;
         @apply justify-items-center gap-y-4;
         @apply bg-mist-800 px-6 md:px-0 py-6 rounded-t-4xl;
-        @apply text-gray-300;
     }
 
     .separator {
