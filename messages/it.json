@@ -1,3 +1,66 @@
 {
-    "$schema": "https://inlang.com/schema/inlang-message-format"
+    "$schema": "https://inlang.com/schema/inlang-message-format",
+
+    "seggs": "Server Eggs",
+    "seggs_short": "Eggs",
+    "hexablue": "HexaBlue",
+
+    "nav": {
+        "dash": "Pannello di Controllo",
+        "support": "Supporto",
+        "source": "Sorgente",
+
+        "actions": {
+            "signin": "Accedi con Discord",
+            "signin_short": "Accedi",
+            "signout": "Logout",
+            "signout_confirm": "Sei sicuro di voler uscire dall'account?"
+        }
+    },
+
+    "placeholder": "Lavori in corso...",
+    "back": "Indietro",
+
+    "home": {
+        "hero": "Un <b>bot di Discord</b> divertente <b>per la condivisione di contenuti</b> che <b>cresce la tua community</b>!",
+        "about": {
+            "title": "Informazioni su Server Eggs",
+            "desc": "<b>Server Eggs</b> permette al tuo server di <b>creare e condividere contenuti</b>, chiamati \"<b>Uova</b>\", contenenti testo, contenuti multimediali, o entrambi.<br />Tali <b>Uova</b> sono poi ottenibili <b>ovunque ci sia il bot</b>, e se sono state create in un <b>server pubblico</b>, gli utenti che vedono l'<b>Uovo</b> si possono unire, perciò <b>la tua community crescerà</b>!"
+        },
+        "features": {
+            "title": "Funzioni",
+            "fun": {
+                "title": "Divertente!",
+                "desc": "Chiunque usi <b>Server Eggs</b> se ne innamora subito!<br />Il suo bellissimo concetto, seppur semplice, è ciò che i membri del tuo server hanno sempre desiderato!"
+            },
+            "customizable": {
+                "title": "Personalizzabile!",
+                "desc": "<b>Server Eggs</b> offre <b>molte opzioni di configurazione</b> sia per i Gestori di Server che per gli utenti!<br />Impostazioni di <b>lingua</b>, di <b>privacy</b>, e molto altro ancora!"
+            },
+            "friendly": {
+                "title": "Amichevole!",
+                "desc": "Dal momento che la tua community incontrerà <b>Server Eggs</b>, saprà come usarlo.<br />Con un comando di <code>/aiuto</code> ben dettagliato, e comandi base facili come <code>/crea</code> e <code>/ricevi</code>, non ci si può sbagliare!"
+            },
+            "mod": {
+                "title": "Moderabile!",
+                "desc": "Coi <i>contenuti generati dagli utenti</i> vengono grandi rischi e responsabilità, e <b>noi sappiamo affrontarle perfettamente</b>.<br /><b>Server Eggs</b> provvede utenti e Gestori di Server di <b>molti strumenti</b> per assicurare <b>che i contenuti siano sicuri</b>.<br />Un <b>sistema di segnalazioni globale</b>, <b>filtri per i server</b> e <b>per i canali</b> e le <b>classificazioni dei contenuti</b> sono solo alcuni esempi dei nostri sforzi perché tutti abbiano una buona esperienza."
+            },
+            "extras": {
+                "title": "Funzioni extra-divertenti!",
+                "desc": "<b>Colleziona Uova</b> e usale per affrontare i tuoi amici in una <b>battaglia</b> decisa dai voti della community.<br />Scala le <b>classifiche</b> delle <b>collezioni di Uova</b>, <b>creazioni</b>, e <b>vittorie in battaglia</b>! Il divertimento è infinito!"
+            },
+            "premium": {
+                "title": "Benefici per chi ci Sostiene!",
+                "desc": "Se decidi di <b>sostenere la missione open source di Server Eggs</b> per soli <i>1,72 EUR/mese</i> (il prezzo minimo permesso da Discord), puoi avere <b>benefici extra</b>, tipo <b>ricevere un nuovo Uovo giornaliero per la tua collezione</b>, <b>avere una maggior possibilità di trovare Uova segrete</b>, e <b>limiti più comodi</b>!"
+            }
+        },
+        "cta": {
+            "title": "Che stai aspettando?",
+            "button": "Aggiungi <b>Server Eggs</b>!"
+        }
+    },
+
+    "footer": {
+        "desc": "<b>Server Eggs</b>, come tutto il software HexaBlue, è libero sotto la <i>GNU General Public License 3.0</i>"
+    }
 }
