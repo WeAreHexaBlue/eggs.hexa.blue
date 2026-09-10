@@ -243,23 +243,6 @@
         }
     }
 
-    .pfp {
-        @apply border border-white rounded-full size-10 sm:size-12;
-        @apply cursor-pointer;
-
-        @apply ring ring-white/70 transition-all duration-200;
-
-		anchor-name: --acc-actions;
-
-        &:hover {
-            @apply scale-105 ring-white;
-        }
-
-        * {
-            @apply rounded-full;
-        }
-    }
-
     .pfp-skeleton {
         @apply border border-white rounded-full bg-mist-700 size-10 sm:size-12;
     }

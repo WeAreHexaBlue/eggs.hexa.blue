@@ -60,6 +60,11 @@
         }
     },
 
+    "dashboard": {
+        "title": "Dashboard - Server Eggs",
+        "select": "Select a server."
+    },
+
     "footer": {
         "desc": "<b>Server Eggs</b>, like all HexaBlue software, is free under the <i>GNU General Public License 3.0</i>"
     }
