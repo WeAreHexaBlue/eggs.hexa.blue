@@ -1,7 +1,6 @@
-import { redirect } from "@sveltejs/kit";
-import { auth } from "$lib/server/auth";
+import { protect } from "$lib/server/auth";
 import { db } from "$lib/server/db";
-import { guild } from "$lib/server/db/bot-schema.js";
+import { guild } from "$lib/server/db/bot-schema";
 import { account } from "$lib/server/db/auth-schema";
 import { eq, inArray } from "drizzle-orm";
 import { env } from "$env/dynamic/private";
@@ -18,24 +17,10 @@ interface DiscordPartialGuild {
 }
 
 export async function load({ locals, request }) {
-    if (!locals.user) {
-        const res = await auth.api.signInSocial({
-            body: {
-                provider: "discord",
-                callbackURL: "/dashboard"
-            },
-            headers: request.headers
-        });
-
-        if (res.url) {
-            redirect(302, res.url);
-        }
-
-        redirect(307, "/");
-    }
+    if (!locals.user) await protect(request, "/dashboard");
 
     const [ discordAccount ] = await db.select().from(account)
-        .where(eq(account.userId, locals.user.id))
+        .where(eq(account.userId, locals.user!.id))
         .limit(1);
     
     if (!discordAccount.accessToken)
