@@ -60,6 +60,14 @@
         }
     },
 
+    "dashboard": {
+        "title": "Pannello di Controllo - Server Eggs",
+        "select": "Seleziona un server.",
+        "slug": {
+            "title": "{name} - Server Eggs"
+        }
+    },
+
     "footer": {
         "desc": "<b>Server Eggs</b>, come tutto il software HexaBlue, è libero sotto la <i>GNU General Public License 3.0</i>"
     }

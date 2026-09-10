@@ -62,7 +62,10 @@
 
     "dashboard": {
         "title": "Dashboard - Server Eggs",
-        "select": "Select a server."
+        "select": "Select a server.",
+        "slug": {
+            "title": "{name} - Server Eggs"
+        }
     },
 
     "footer": {
