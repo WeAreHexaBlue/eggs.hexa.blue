@@ -1,11 +1,24 @@
 import { pgTable, index, foreignKey, serial, text, timestamp, bigint, varchar, boolean, uniqueIndex, integer, unique, bigserial, jsonb } from "drizzle-orm/pg-core"
 
+export type Rating = "SAFE" | "QUESTIONABLE" | "EXPLICIT";
+
+export interface GuildRatings {
+    normal: Rating[];
+    nsfw: Rating[];
+}
+
+export interface GuildChannelRatings {
+    safe: string[];
+    questionable: string[];
+    explicit: string[];
+}
+
 export const egg = pgTable("egg", {
 	id: serial().primaryKey().notNull(),
 	text: text(),
 	attachPath: text("attach_path"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).notNull(),
-	editedAt: timestamp("edited_at", { withTimezone: true, mode: 'string' }).notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull(),
+	editedAt: timestamp("edited_at", { withTimezone: true, mode: "string" }).notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	creatorId: bigint("creator_id", { mode: "number" }),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
@@ -74,7 +87,7 @@ export const battle = pgTable("battle", {
 	channelId: bigint("channel_id", { mode: "number" }),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	messageId: bigint("message_id", { mode: "number" }),
-	endsAt: timestamp("ends_at", { withTimezone: true, mode: 'string' }).notNull(),
+	endsAt: timestamp("ends_at", { withTimezone: true, mode: "string" }).notNull(),
 	status: varchar({ length: 10 }).notNull(),
 	eggAId: integer("egg_a_id").notNull(),
 	eggBId: integer("egg_b_id").notNull(),
@@ -129,7 +142,7 @@ export const battle = pgTable("battle", {
 export const duser = pgTable("user", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "bigint" }).primaryKey().notNull(),
-	lang: varchar({ length: 5 }).default('').notNull(),
+	lang: varchar({ length: 5 }).default("").notNull(),
 	banned: boolean().notNull(),
 	public: boolean().notNull(),
 }, (table) => [
@@ -139,7 +152,7 @@ export const duser = pgTable("user", {
 export const guild = pgTable("guild", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "bigint" }).primaryKey().notNull(),
-	lang: varchar({ length: 5 }).default('en').notNull(),
+	lang: varchar({ length: 5 }).default("en").notNull(),
 	allowUserLang: boolean("allow_user_lang").notNull(),
 	description: text(),
 	invite: text(),
@@ -158,14 +171,14 @@ export const tortoiseMigrations = pgTable("tortoise_migrations", {
 	id: serial().primaryKey().notNull(),
 	app: varchar({ length: 255 }).notNull(),
 	name: varchar({ length: 255 }).notNull(),
-	appliedAt: timestamp("applied_at", { withTimezone: true, mode: 'string' }).notNull(),
+	appliedAt: timestamp("applied_at", { withTimezone: true, mode: "string" }).notNull(),
 }, (table) => [
 	unique("uid_tortoise_mi_app_3803a5").on(table.app, table.name),
 ]);
 
 export const report = pgTable("report", {
 	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).notNull(),
 	eggId: integer("egg_id").notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	reporterId: bigint("reporter_id", { mode: "number" }).notNull(),

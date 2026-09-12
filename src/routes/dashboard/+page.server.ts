@@ -1,21 +1,9 @@
-import { protect } from "$lib/server/auth";
+import { getGuilds, canManage, protect } from "$lib/server/utils";
 import { redirect } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { guild } from "$lib/server/db/bot-schema";
-import { account } from "$lib/server/db/auth-schema";
-import { eq, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 import { env } from "$env/dynamic/private";
-
-const ADMINISTRATOR = 1n << 3n;
-const MANAGE_GUILD = 1n << 5n;
-
-interface DiscordPartialGuild {
-    id: string;
-    name: string;
-    icon: string | null;
-    owner: boolean;
-    permissions: string;
-}
 
 export async function load({ locals, request, url }) {
     const newguild = url.searchParams.get("guild_id");
@@ -25,27 +13,8 @@ export async function load({ locals, request, url }) {
 
     if (!locals.user) await protect(request, "/dashboard");
 
-    const [ discordAccount ] = await db.select().from(account)
-        .where(eq(account.userId, locals.user!.id))
-        .limit(1);
-    
-    if (!discordAccount.accessToken)
-        return { user: locals.user, guilds: [] };
-
-    const guildres = await fetch("https://discord.com/api/v10/users/@me/guilds", {
-        headers: {
-            "Authorization": `Bearer ${discordAccount.accessToken}`
-        }
-    });
-
-    const discordGuilds: DiscordPartialGuild[] = await guildres.json();
-
-    const allowedGuilds = discordGuilds.filter((g) => {
-        if (g.owner) return true;
-
-        const perms = BigInt(g.permissions);
-        return (perms & ADMINISTRATOR) === ADMINISTRATOR || (perms & MANAGE_GUILD) === MANAGE_GUILD;
-    });
+    const discordGuilds = await getGuilds(locals, request);
+    const allowedGuilds = discordGuilds.filter(canManage);
 
     const botHavingSet = new Set<string>();
 

@@ -1,61 +1,19 @@
-import { protect } from "$lib/server/auth";
+import { getGuild, manageCheck, protect } from "$lib/server/utils";
 import { db } from "$lib/server/db";
 import { guild } from "$lib/server/db/bot-schema";
-import { account } from "$lib/server/db/auth-schema";
 import { eq } from "drizzle-orm";
 import { env } from "$env/dynamic/private";
-import { error, redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
+import { error, fail, redirect } from "@sveltejs/kit";
 
-const ADMINISTRATOR = 1n << 3n;
-const MANAGE_GUILD = 1n << 5n;
-
-interface DiscordPartialGuild {
-    id: string;
-    name: string;
-    icon: string | null;
-    owner: boolean;
-    permissions: string;
-}
-
-interface DiscordChannel {
-    id: string;
-    name: string;
-    type: number;
-    position: number;
-    parent_id: string | null;
-}
-
-export const load: PageServerLoad = async ({ locals, request, params }) => {
+export async function load({ locals, request, params }) {
     if (!locals.user) await protect(request, `/dashboard/${params.slug}`);
 
     if (!/^\d+$/.test(params.slug)) {
         error(404, "Guild not found");
     }
 
-    const [ discordAccount ] = await db.select().from(account)
-        .where(eq(account.userId, locals.user!.id))
-        .limit(1);
-
-    if (!discordAccount?.accessToken) {
-        await protect(request, `/dashboard/${params.slug}`);
-    }
-
-    const guildsres = await fetch("https://discord.com/api/v10/users/@me/guilds", {
-        headers: {
-            Authorization: `Bearer ${discordAccount.accessToken}`
-        }
-    });
-
-    const discordGuilds: DiscordPartialGuild[] = await guildsres.json();
-    const thisGuild = discordGuilds.find((g) => g.id === params.slug)!;
-
-    const perms = BigInt(thisGuild.permissions);
-    const hasAccess = thisGuild.owner || (perms & ADMINISTRATOR) === ADMINISTRATOR || (perms & MANAGE_GUILD) === MANAGE_GUILD;
-
-    if (!hasAccess) {
-        error(403, "Forbidden");
-    }
+    const thisGuild = await getGuild(locals, request, params);
+    manageCheck(thisGuild);
 
     const guildres = await fetch(`https://discord.com/api/v10/guilds/${params.slug}?with_counts=true`, {
         headers: {
@@ -127,3 +85,27 @@ export const load: PageServerLoad = async ({ locals, request, params }) => {
         channels
     };
 };
+
+export const actions = {
+    default: async ({ locals, request, params }) => {
+        if (!locals.user) fail(401, "Unauthorized.");
+
+        const thisGuild = await getGuild(locals, request, params);
+        manageCheck(thisGuild);
+
+        const data = await request.formData();
+
+        // process updates
+
+        try {
+            await db.update(guild)
+                .set({})
+                .where(eq(guild.id, BigInt(params.slug))) 
+
+            return { ok: true };
+        } catch (e) {
+            console.error(e);
+            return fail(500, { message: "Failed to save settings." })
+        }
+    }
+}

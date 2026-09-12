@@ -5,8 +5,6 @@ import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
 import { db } from '$lib/server/db';
 
-import { redirect } from "@sveltejs/kit";
-
 export const auth = betterAuth({
 	baseURL: env.ORIGIN,
 	secret: env.BETTER_AUTH_SECRET,
@@ -25,18 +23,3 @@ export const auth = betterAuth({
 		sveltekitCookies(getRequestEvent) // make sure this is the last plugin in the array
 	]
 });
-
-export async function protect(request: Request, callback: string) {
-    const res = await auth.api.signInSocial({
-        body: {
-            provider: "discord",
-            callbackURL: callback
-        },
-        headers: request.headers
-    });
-    
-    if (res.url)
-        redirect(302, res.url);
-    
-    redirect(307, "/");
-}

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { resolve } from "$app/paths";
     import { authClient } from "$lib/auth-client";
+	import { codeToHuman } from "$lib";
 
 	import { m } from "$lib/paraglide/messages";
 
@@ -34,11 +35,6 @@
 			})
 		}
 	};
-
-    const codeToHuman = {
-        en: "English",
-        it: "Italiano"
-    };
 
 	let menuOpen = $state(false);
 

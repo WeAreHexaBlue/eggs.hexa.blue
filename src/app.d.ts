@@ -14,6 +14,22 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	interface DiscordPartialGuild {
+		id: string;
+		name: string;
+		icon: string | null;
+		owner: boolean;
+		permissions: string;
+	}
+	
+	interface DiscordChannel {
+		id: string;
+		name: string;
+		type: number;
+		position: number;
+		parent_id: string | null;
+	}
 }
 
 export {};
