@@ -22,13 +22,22 @@ declare global {
 		owner: boolean;
 		permissions: string;
 	}
-	
+
 	interface DiscordChannel {
 		id: string;
 		name: string;
 		type: number;
 		position: number;
 		parent_id: string | null;
+	}
+
+	interface DiscordGuild {
+		id: string;
+		name: string;
+		icon: string | null;
+		banner?: string | null;
+		description?: string | null;
+		rules_channel_id?: string | null;
 	}
 }
 
