@@ -192,13 +192,13 @@
 
 <main class="flex flex-col items-center">
 	<header class="settings-header">
+		{#if data.guild.icon}
+			<img class="guild-icon" src={data.guild.icon} alt="" />
+		{/if}
 		<h1 class="title">
 			{m['dashboard.slug.heading']()}
 			<span class="text-blurple-light">{data.guild.name}</span>
 		</h1>
-		{#if data.guild.icon}
-			<img class="guild-icon" src={data.guild.icon} alt="" />
-		{/if}
 	</header>
 
 	<form
