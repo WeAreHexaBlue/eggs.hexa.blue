@@ -65,11 +65,13 @@
 		"addGuild": "Add Server Eggs to {name}",
 		"slug": {
 			"title": "{name} - Server Eggs",
+			"heading": "Settings for",
 			"general": {
 				"title": "General",
 				"lang": {
 					"title": "Language",
-					"desc": "The language Server Eggs will use in this server."
+					"desc": "The language Server Eggs will use in this server.",
+					"unsupported": "{lang} (unsupported)"
 				},
 				"allowExtLang": {
 					"title": "Allow External Languages",

@@ -199,7 +199,8 @@
 <main class="flex flex-col items-center">
 	<header class="settings-header">
 		<h1 class="title">
-			Settings for <span class="text-blurple-light">{data.guild.name}</span>
+			{m['dashboard.slug.heading']()}
+			<span class="text-blurple-light">{data.guild.name}</span>
 		</h1>
 		{#if data.guild.icon}
 			<img class="guild-icon" src={data.guild.icon} alt="" />
@@ -242,7 +243,7 @@
 					<select id="lang" name="lang" bind:value={formState.lang}>
 						{#if !currentLangIsSupported}
 							<option value={formState.lang} disabled>
-								{formState.lang} (unsupported)
+								{m['dashboard.slug.general.lang.unsupported']({ lang: formState.lang })}
 							</option>
 						{/if}
 						{#each botLocales as locale (locale)}

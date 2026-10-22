@@ -64,7 +64,96 @@
 		"openGuild": "Apri le impostazioni di {name}",
 		"addGuild": "Aggiungi Server Eggs a {name}",
 		"slug": {
-			"title": "{name} - Server Eggs"
+			"title": "{name} - Server Eggs",
+			"heading": "Impostazioni per",
+			"general": {
+				"title": "Generale",
+				"lang": {
+					"title": "Lingua",
+					"desc": "La lingua che Server Eggs userà in questo server.",
+					"unsupported": "{lang} (non supportata)"
+				},
+				"allowExtLang": {
+					"title": "Consenti lingue esterne",
+					"desc": "Lascia che gli utenti scelgano la propria lingua invece di imporre quella del server."
+				},
+				"viewJoinButton": {
+					"title": "Mostra il pulsante Unisciti al Server d'Origine",
+					"desc": "Consenti agli utenti di unirsi al server d'origine di un Uovo tramite un pulsante."
+				}
+			},
+			"network": {
+				"title": "Rete Globale delle Uova",
+				"public": {
+					"title": "Server Pubblico",
+					"desc": "Consenti a chiunque veda un Uovo di questo server di unirsi. Verrà creato automaticamente un invito."
+				},
+				"description": {
+					"title": "Descrizione del Server",
+					"desc": "Una breve e accattivante descrizione mostrata insieme alle Uova del tuo server.",
+					"placeholder": "Inserisci qui una descrizione..."
+				},
+				"characters": "{count}/300"
+			},
+			"ratings": {
+				"title": "Classificazioni dei Contenuti",
+				"desc": "Scegli quali classificazioni dei contenuti sono permesse in ciascun tipo di canale.",
+				"normal": "Canali per tutte le età",
+				"nsfw": "Canali per maggiorenni",
+				"safe": "Sicuro",
+				"questionable": "Dubbio",
+				"explicit": "Esplicito",
+				"normalExplicit": "I contenuti espliciti non sono mai permessi nei canali per tutte le età.",
+				"atLeastOne": "Mantieni attiva almeno una classificazione."
+			},
+			"channels": {
+				"title": "Override dei Canali",
+				"desc": "Assegna una classificazione predefinita a singoli canali. Un canale può avere un solo override.",
+				"channel": "Canale",
+				"rating": "Classificazione",
+				"add": "Aggiungi override del canale",
+				"remove": "Rimuovi l'override per {channel}",
+				"none": "Nessun override dei canali.",
+				"noChannels": "Nessun canale di testo disponibile.",
+				"unknown": "Canale sconosciuto ({id})",
+				"note": "Gli override impostano la classificazione predefinita per le nuove Uova create in quel canale."
+			},
+			"logging": {
+				"title": "Registro",
+				"desc": "Dove Server Eggs deve registrare le creazioni e le modifiche alle Uova.",
+				"logch": {
+					"title": "Canale del Registro",
+					"desc": "Scegli un canale di testo, o lascia vuoto per disattivare il registro."
+				},
+				"none": "Nessun registro"
+			},
+			"battles": {
+				"title": "Battaglie",
+				"time": {
+					"title": "Durata della Battaglia",
+					"desc": "Per quanto tempo una battaglia resta aperta alle votazioni."
+				},
+				"minutes": "Minuti"
+			},
+			"save": "Salva modifiche",
+			"reset": "Reimposta",
+			"saving": "Salvataggio…",
+			"saved": "Impostazioni salvate.",
+			"unsaved": "Hai modifiche non salvate.",
+			"errors": {
+				"unauthorized": "Devi accedere di nuovo.",
+				"not_found": "Impossibile trovare quel server.",
+				"bot_missing": "Server Eggs non è ancora installato in questo server.",
+				"invalid_lang": "Scegli una lingua supportata.",
+				"invalid_ratings": "Mantieni attiva almeno una classificazione per ciascun tipo di canale.",
+				"explicit_normal": "I contenuti espliciti non sono permessi nei canali per tutte le età.",
+				"invalid_channel_ratings": "Uno o più override dei canali non sono validi.",
+				"invalid_logch": "Scegli un canale di testo valido per il registro.",
+				"invalid_battle_time": "La durata della battaglia deve essere un numero intero di minuti tra 1 e 1.000.000.",
+				"invite_failed": "Impossibile creare un invito. Assicurati che Server Eggs possa creare inviti in questo server.",
+				"save_failed": "Qualcosa è andato storto durante il salvataggio. Riprova.",
+				"unknown": "Qualcosa è andato storto. Riprova."
+			}
 		}
 	},
 	"footer": {
