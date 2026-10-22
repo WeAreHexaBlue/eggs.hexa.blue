@@ -13,7 +13,7 @@
 	function initForm() {
 		return {
 			lang: data.settings.lang,
-			allowUserLang: data.settings.allowUserLang,
+			allowExtLang: data.settings.allowExtLang,
 			viewJoinButton: data.settings.viewJoinButton,
 
 			description: data.settings.description ?? '',
@@ -79,7 +79,7 @@
 
 	let modified = $derived(
 		formState.lang !== data.settings.lang ||
-			formState.allowUserLang !== data.settings.allowUserLang ||
+			formState.allowExtLang !== data.settings.allowExtLang ||
 			formState.viewJoinButton !== data.settings.viewJoinButton ||
 			formState.description !== data.settings.description ||
 			formState.public !== Boolean(data.settings.invite) ||
@@ -139,13 +139,13 @@
 				</span>
 				<span class="setting-row">
 					<span class="setting-info">
-						<label for="allowUserLang">Allow User Languages</label>
+						<label for="allowExtLang">Allow External Languages</label>
 						<p>
 							When enabled, allows <b>Server Eggs</b> to respond in a user's set language.<br
 							/>Otherwise, enforces the server's language.
 						</p>
 					</span>
-					<input type="checkbox" name="allowUserLang" bind:checked={formState.allowUserLang} />
+					<input type="checkbox" name="allowExtLang" bind:checked={formState.allowExtLang} />
 				</span>
 				<span class="setting-row">
 					<span class="setting-info">
