@@ -30,7 +30,14 @@
 </svelte:head>
 <main>
     {#snippet ctabtn()}
-        <button id="cta" onclick={() => window.open("https://discord.com/discovery/applications/886686500845138041", "_blank")}>
+        <button
+            id="cta"
+            onclick={() =>
+                window.open(
+                    "https://discord.com/discovery/applications/886686500845138041",
+                    "_blank"
+                )}
+        >
             {@html m["home.cta.button"]()}
         </button>
     {/snippet}
@@ -114,7 +121,7 @@
         @apply grid gap-y-6;
         @apply relative -mt-40 w-full overflow-hidden;
         @apply bg-bpgrad;
-        @apply pt-32 sm:pt-42 pb-15;
+        @apply pt-32 pb-15 sm:pt-42;
     }
 
     .herosect {
@@ -122,16 +129,16 @@
     }
 
     .hero {
-        @apply text-4xl sm:text-6xl font-extrabold;
+        @apply text-4xl font-extrabold sm:text-6xl;
     }
 
     .egg {
-        @apply hidden lg:block size-100;
+        @apply hidden size-100 lg:block;
     }
 
     .deck {
         @apply flex items-end justify-center;
-        @apply px-4 sm:px-6 pt-12 pb-4;
+        @apply px-4 pt-12 pb-4 sm:px-6;
     }
 
     .card {
@@ -141,7 +148,7 @@
         z-index: var(--slot);
 
         img {
-            @apply block h-56 sm:h-72 lg:h-80 xl:h-96 w-auto;
+            @apply block h-56 w-auto sm:h-72 lg:h-80 xl:h-96;
         }
 
         & + & {
@@ -184,7 +191,7 @@
     }
 
     #cta {
-        @apply bg-blurple hover:bg-blurple-dark mt-3 md:mt-6 p-4 sm:p-6 w-fit justify-self-center;
+        @apply mt-3 w-fit justify-self-center bg-blurple p-4 hover:bg-blurple-dark sm:p-6 md:mt-6;
         @apply rounded-2xl border border-transparent hover:border-white;
         @apply text-2xl;
         @apply transition-transform duration-200 hover:scale-105;

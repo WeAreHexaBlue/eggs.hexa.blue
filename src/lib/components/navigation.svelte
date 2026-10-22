@@ -1,13 +1,13 @@
 <script lang="ts">
     import { resolve } from "$app/paths";
     import { authClient } from "$lib/auth-client";
-	import { codeToHuman } from "$lib";
+    import { codeToHuman } from "$lib";
 
-	import { m } from "$lib/paraglide/messages";
+    import { m } from "$lib/paraglide/messages";
 
-	import { fade, fly, slide } from "svelte/transition";
-	import { cubicOut } from "svelte/easing";
-	import { prefersReducedMotion } from "svelte/motion";
+    import { fade, fly, slide } from "svelte/transition";
+    import { cubicOut } from "svelte/easing";
+    import { prefersReducedMotion } from "svelte/motion";
 
     import logo from "$lib/assets/seggs.svg";
 
@@ -19,71 +19,75 @@
         await authClient.signIn.social({
             provider: "discord",
             callbackURL: resolve("/")
-        })
-    };
+        });
+    }
 
-	async function logout() {
-		const confirm = window.confirm(m["nav.actions.signout_confirm"]());
+    async function logout() {
+        const confirm = window.confirm(m["nav.actions.signout_confirm"]());
 
-		if (confirm) {
-			await authClient.signOut({
-				fetchOptions: {
+        if (confirm) {
+            await authClient.signOut({
+                fetchOptions: {
                     onSuccess: () => {
                         location.href = "/";
                     }
                 }
-			})
-		}
-	};
+            });
+        }
+    }
 
-	let menuOpen = $state(false);
+    let menuOpen = $state(false);
 
-	function toggleMenu() {
-		menuOpen = !menuOpen;
-	}
+    function toggleMenu() {
+        menuOpen = !menuOpen;
+    }
 
-	function closeMenu() {
-		menuOpen = false;
-	}
+    function closeMenu() {
+        menuOpen = false;
+    }
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === "Escape") closeMenu();
-	}
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.key === "Escape") closeMenu();
+    }
 
-	function handleResize() {
-		if (window.innerWidth >= 1280) closeMenu();
-	}
+    function handleResize() {
+        if (window.innerWidth >= 1280) closeMenu();
+    }
 </script>
 
 <svelte:window onkeydown={handleKeydown} onresize={handleResize} />
 
 {#snippet brand()}
-	<a href={resolve("/")} class="brand" onclick={closeMenu}>
-		<img src={logo} class="size-10 sm:size-15" alt="Server Eggs Logo" />
-        <h1 class="title hidden sm:inline">{m.seggs()}</h1>
+    <a href={resolve("/")} class="brand" onclick={closeMenu}>
+        <img src={logo} class="size-10 sm:size-15" alt="Server Eggs Logo" />
+        <h1 class="hidden title sm:inline">{m.seggs()}</h1>
         <h1 class="title sm:hidden">{m.seggs_short()}</h1>
-	</a>
+    </a>
 {/snippet}
 
 {#snippet links(vertical = false)}
-	<span class="links" class:vertical>
-		<a href={resolve("/dashboard")} onclick={closeMenu}>{m["nav.dash"]()}</a>
-        <a href="https://discord.gg/G9vfEZGZnT" target="_blank" onclick={closeMenu}>{m["nav.support"]()}</a>
-        <a href="https://github.com/WeAreHexaBlue/ServerEggs" target="_blank" onclick={closeMenu}>{m["nav.source"]()}</a>
-	</span>
+    <span class="links" class:vertical>
+        <a href={resolve("/dashboard")} onclick={closeMenu}>{m["nav.dash"]()}</a>
+        <a href="https://discord.gg/G9vfEZGZnT" target="_blank" onclick={closeMenu}
+            >{m["nav.support"]()}</a
+        >
+        <a href="https://github.com/WeAreHexaBlue/ServerEggs" target="_blank" onclick={closeMenu}
+            >{m["nav.source"]()}</a
+        >
+    </span>
 {/snippet}
 
 {#snippet sessionManager()}
     {#if $session.isPending}
         <span class="pfp-skeleton" aria-hidden="true" aria-label="Loading..."></span>
     {:else if $session.data?.user}
-        <button class="pfp" class:bg-mist-700={!$session.data.user.image} popovertarget="acc-actions">
+        <button
+            class="pfp"
+            class:bg-mist-700={!$session.data.user.image}
+            popovertarget="acc-actions"
+        >
             {#if $session.data.user.image}
-                <img
-                    src={$session.data.user.image}
-                    alt=""
-                    referrerpolicy="no-referrer"
-                />
+                <img src={$session.data.user.image} alt="" referrerpolicy="no-referrer" />
             {:else}
                 <span class="" aria-hidden="true">
                     {($session.data.user.name ?? "?").slice(0, 1).toUpperCase()}
@@ -91,9 +95,11 @@
             {/if}
         </button>
 
-		<div popover id="acc-actions">
-			<button class="text-red-400 hover:text-red-500 cursor-pointer" onclick={logout}>{m["nav.actions.signout"]()}</button>
-		</div>
+        <div popover id="acc-actions">
+            <button class="cursor-pointer text-red-400 hover:text-red-500" onclick={logout}
+                >{m["nav.actions.signout"]()}</button
+            >
+        </div>
     {:else}
         <button class="signin" onclick={login}>
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="size-5 shrink-0">
@@ -108,83 +114,90 @@
 {/snippet}
 
 {#snippet langSelector()}
-	<select
-		name="lang"
-		class="rounded-md lang"
-		aria-label="Language"
-		onchange={(e) => setLocale(e.currentTarget.value as Locale)}
-	>
-		{#each locales as locale (locale)}
-			<option value={locale} class="bg-neutral-900 text-white" selected={getLocale() === locale}>
-				{codeToHuman[locale]}
-			</option>
-		{/each}
-	</select>
+    <select
+        name="lang"
+        class="lang rounded-md"
+        aria-label="Language"
+        onchange={(e) => setLocale(e.currentTarget.value as Locale)}
+    >
+        {#each locales as locale (locale)}
+            <option
+                value={locale}
+                class="bg-neutral-900 text-white"
+                selected={getLocale() === locale}
+            >
+                {codeToHuman[locale]}
+            </option>
+        {/each}
+    </select>
 {/snippet}
 
-<nav class="nav" in:fly={{ y: -12, duration: prefersReducedMotion.current ? 0 : 220, easing: cubicOut }}>
-	<div class="bar">
-		<span class="main">
-			{@render brand()}
-			<span class="desktop-only">
-				{@render links()}
-			</span>
-		</span>
+<nav
+    class="nav"
+    in:fly={{ y: -12, duration: prefersReducedMotion.current ? 0 : 220, easing: cubicOut }}
+>
+    <div class="bar">
+        <span class="main">
+            {@render brand()}
+            <span class="desktop-only">
+                {@render links()}
+            </span>
+        </span>
         <span class="actions">
             <span class="desktop-only">
-			    {@render langSelector()}
-		    </span>
+                {@render langSelector()}
+            </span>
 
             {@render sessionManager()}
 
-		    <!-- Hamburger icon (or X) -->
-		    <button
-			    class="hamburger"
-			    aria-label={menuOpen ? "Close menu" : "Open menu"}
-			    aria-expanded={menuOpen}
-			    aria-controls="mobile-menu"
-			    onclick={toggleMenu}
-		    >
-			    <span class="ham-line ham-line-1" aria-hidden="true"></span>
-			    <span class="ham-line ham-line-2" aria-hidden="true"></span>
-			    <span class="ham-line ham-line-3" aria-hidden="true"></span>
-		    </button>
+            <!-- Hamburger icon (or X) -->
+            <button
+                class="hamburger"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={menuOpen}
+                aria-controls="mobile-menu"
+                onclick={toggleMenu}
+            >
+                <span class="ham-line ham-line-1" aria-hidden="true"></span>
+                <span class="ham-line ham-line-2" aria-hidden="true"></span>
+                <span class="ham-line ham-line-3" aria-hidden="true"></span>
+            </button>
         </span>
-	</div>
-	{#if menuOpen}
-		<div
-			id="mobile-menu"
-			class="mobile-panel"
-			in:slide={{ duration: prefersReducedMotion.current ? 0 : 300, easing: cubicOut }}
-			out:slide={{
-				duration: prefersReducedMotion.current ? 0 : 250,
-				delay: prefersReducedMotion.current ? 0 : 60,
-				easing: cubicOut
-			}}
-		>
-			<div
-				class="mobile-inner"
-				in:fade|global={{
-					delay: prefersReducedMotion.current ? 0 : 120,
-					duration: prefersReducedMotion.current ? 0 : 200
-				}}
-				out:fade|global={{ duration: prefersReducedMotion.current ? 0 : 120 }}
-			>
-				{@render links(true)}
-				{@render langSelector()}
-			</div>
-		</div>
-	{/if}
+    </div>
+    {#if menuOpen}
+        <div
+            id="mobile-menu"
+            class="mobile-panel"
+            in:slide={{ duration: prefersReducedMotion.current ? 0 : 300, easing: cubicOut }}
+            out:slide={{
+                duration: prefersReducedMotion.current ? 0 : 250,
+                delay: prefersReducedMotion.current ? 0 : 60,
+                easing: cubicOut
+            }}
+        >
+            <div
+                class="mobile-inner"
+                in:fade|global={{
+                    delay: prefersReducedMotion.current ? 0 : 120,
+                    duration: prefersReducedMotion.current ? 0 : 200
+                }}
+                out:fade|global={{ duration: prefersReducedMotion.current ? 0 : 120 }}
+            >
+                {@render links(true)}
+                {@render langSelector()}
+            </div>
+        </div>
+    {/if}
 </nav>
 
 <style lang="postcss">
-	@reference "../../base.css";
+    @reference "../../base.css";
 
     .nav {
         @apply fixed inset-x-0 z-50 mx-auto;
-        @apply m-4 sm:m-8 rounded-xl border border-gray-300 p-4;
+        @apply m-4 rounded-xl border border-gray-300 p-4 sm:m-8;
         @apply bg-blurple;
-		@apply flex flex-col items-stretch gap-2;
+        @apply flex flex-col items-stretch gap-2;
 
         @apply transition-all duration-300;
     }
@@ -194,17 +207,17 @@
         @apply xl:-translate-y-1 xl:drop-shadow-xl;
     }
 
-	.bar {
-		@apply flex w-full items-center justify-between gap-2;
-	}
+    .bar {
+        @apply flex w-full items-center justify-between gap-2;
+    }
 
     .nav .main {
         @apply flex items-center gap-8;
     }
 
-	.desktop-only {
-		@apply hidden xl:flex items-center;
-	}
+    .desktop-only {
+        @apply hidden items-center xl:flex;
+    }
 
     .links {
         @apply flex items-center gap-6 text-2xl font-semibold;
@@ -214,9 +227,9 @@
         }
     }
 
-	.links.vertical {
-		@apply flex-col md:grid md:grid-cols-3 gap-4 md:gap-8;
-	}
+    .links.vertical {
+        @apply flex-col gap-4 md:grid md:grid-cols-3 md:gap-8;
+    }
 
     .actions {
         @apply flex items-center gap-2 sm:gap-3;
@@ -224,9 +237,9 @@
 
     .signin {
         @apply flex items-center gap-2 whitespace-nowrap;
-        @apply px-3 sm:px-4 py-2;
-        @apply bg-white rounded-full;
-        @apply text-blurple-dark font-bold text-sm;
+        @apply px-3 py-2 sm:px-4;
+        @apply rounded-full bg-white;
+        @apply text-sm font-bold text-blurple-dark;
         @apply cursor-pointer border-2 border-transparent;
         @apply transition-all duration-200;
 
@@ -240,79 +253,79 @@
     }
 
     .pfp-skeleton {
-        @apply border border-white rounded-full bg-mist-700 size-10 sm:size-12;
+        @apply size-10 rounded-full border border-white bg-mist-700 sm:size-12;
     }
 
-	#acc-actions {
-		@apply m-0 mt-7 md:mt-8;
-		@apply px-8 py-4;
-		@apply bg-mist-800 text-white;
-		@apply rounded-xl;
+    #acc-actions {
+        @apply m-0 mt-7 md:mt-8;
+        @apply px-8 py-4;
+        @apply bg-mist-800 text-white;
+        @apply rounded-xl;
 
-		position-anchor: --acc-actions;
-		position-area: bottom span-left;
-		position-try-fallbacks: flip-block;
-	}
+        position-anchor: --acc-actions;
+        position-area: bottom span-left;
+        position-try-fallbacks: flip-block;
+    }
 
-	.hamburger {
-		@apply flex flex-col items-center justify-center rounded-lg p-2 cursor-pointer;
-		@apply border border-transparent;
-		@apply xl:hidden;
-		width: 2.75rem;
-		height: 2.75rem;
+    .hamburger {
+        @apply flex cursor-pointer flex-col items-center justify-center rounded-lg p-2;
+        @apply border border-transparent;
+        @apply xl:hidden;
+        width: 2.75rem;
+        height: 2.75rem;
 
-		--ham-line: 2px;
-		--ham-gap: 6px;
-		--ham-shift: calc(var(--ham-line) + var(--ham-gap));
-		gap: var(--ham-gap);
+        --ham-line: 2px;
+        --ham-gap: 6px;
+        --ham-shift: calc(var(--ham-line) + var(--ham-gap));
+        gap: var(--ham-gap);
 
-		&:hover {
-			@apply border-white;
-		}
+        &:hover {
+            @apply border-white;
+        }
 
-		&[aria-expanded="true"] {
-			.ham-line-1 {
-				transform: translateY(var(--ham-shift)) rotate(45deg);
-			}
+        &[aria-expanded="true"] {
+            .ham-line-1 {
+                transform: translateY(var(--ham-shift)) rotate(45deg);
+            }
 
-			.ham-line-2 {
-				opacity: 0;
-			}
+            .ham-line-2 {
+                opacity: 0;
+            }
 
-			.ham-line-3 {
-				transform: translateY(calc(var(--ham-shift) * -1)) rotate(-45deg);
-			}
-		}
-	}
+            .ham-line-3 {
+                transform: translateY(calc(var(--ham-shift) * -1)) rotate(-45deg);
+            }
+        }
+    }
 
-	.ham-line {
-		display: block;
-		width: 1.5rem;
-		height: var(--ham-line);
-		border-radius: 9999px;
-		background: currentColor;
-		transition:
-			transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-			opacity 200ms ease;
-	}
+    .ham-line {
+        display: block;
+        width: 1.5rem;
+        height: var(--ham-line);
+        border-radius: 9999px;
+        background: currentColor;
+        transition:
+            transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 200ms ease;
+    }
 
-	@media (prefers-reduced-motion: reduce) {
-		.ham-line {
-			transition: none;
-		}
-	}
+    @media (prefers-reduced-motion: reduce) {
+        .ham-line {
+            transition: none;
+        }
+    }
 
-	.lang {
-		@apply w-fit text-center [text-align-last:center];
-	}
+    .lang {
+        @apply w-fit text-center [text-align-last:center];
+    }
 
     .mobile-panel {
-		@apply xl:hidden;
+        @apply xl:hidden;
     }
 
-	.mobile-inner {
-		@apply grid justify-center content-center gap-5 border-t border-white/20 pt-4;
-	}
+    .mobile-inner {
+        @apply grid content-center justify-center gap-5 border-t border-white/20 pt-4;
+    }
 
     .mobile-inner .lang {
         @apply mx-auto;

@@ -6,20 +6,20 @@
     function back(e: MouseEvent) {
         e.preventDefault();
         if (window.history.length > 1) window.history.back();
-        else window.location.href = '/';
+        else window.location.href = "/";
     }
 </script>
 
-<main class="flex flex-col flex-1 justify-center items-center">
+<main class="flex flex-1 flex-col items-center justify-center">
     <span class="mb-6">
-        <h1 class="font-extrabold text-6xl">
+        <h1 class="text-6xl font-extrabold">
             {page.status}
         </h1>
         <p>
             {page.error?.message}
         </p>
     </span>
-    <a href={resolve("/")} onclick={back} class="hover:gradtxt underline text-2xl">
+    <a href={resolve("/")} onclick={back} class="hover:gradtxt text-2xl underline">
         {m.back()}
     </a>
 </main>

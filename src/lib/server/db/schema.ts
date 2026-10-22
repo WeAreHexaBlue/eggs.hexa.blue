@@ -1,2 +1,2 @@
-export * from './auth-schema';
-export * from './bot-schema';
+export * from "./auth-schema";
+export * from "./bot-schema";
