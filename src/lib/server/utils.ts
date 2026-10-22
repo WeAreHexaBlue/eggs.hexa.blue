@@ -259,9 +259,12 @@ export async function createGuildInvite(channelId: string): Promise<string | nul
 
 	if (!res.ok) return null;
 
-	const invite = (await res.json()) as { url?: string };
+	const invite = (await res.json()) as { code?: string; url?: string };
 
-	return invite.url ?? null;
+	if (invite.url) return invite.url;
+	if (invite.code) return `https://discord.gg/${invite.code}`;
+
+	return null;
 }
 
 /** URL that adds the bot to `guildId`, or to any server when omitted. */

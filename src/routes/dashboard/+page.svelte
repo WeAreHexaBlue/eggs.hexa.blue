@@ -63,6 +63,10 @@
 	.guilds {
 		@apply flex flex-wrap justify-center gap-4;
 		@apply list-none p-0;
+
+		li {
+			@apply list-none;
+		}
 	}
 
 	.guild {

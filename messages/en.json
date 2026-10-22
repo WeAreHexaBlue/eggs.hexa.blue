@@ -64,7 +64,94 @@
 		"openGuild": "Open settings for {name}",
 		"addGuild": "Add Server Eggs to {name}",
 		"slug": {
-			"title": "{name} - Server Eggs"
+			"title": "{name} - Server Eggs",
+			"general": {
+				"title": "General",
+				"lang": {
+					"title": "Language",
+					"desc": "The language Server Eggs will use in this server."
+				},
+				"allowExtLang": {
+					"title": "Allow External Languages",
+					"desc": "Let users pick their own language instead of enforcing the server language."
+				},
+				"viewJoinButton": {
+					"title": "Show Join Origin Server button",
+					"desc": "Let users join an Egg's origin server from a button."
+				}
+			},
+			"network": {
+				"title": "Global Egg Network",
+				"public": {
+					"title": "Public Server",
+					"desc": "Allow anyone who sees an Egg from this server to join it. An invite will be created automatically."
+				},
+				"description": {
+					"title": "Server Description",
+					"desc": "A short, enticing description shown with your server's Eggs.",
+					"placeholder": "Insert a description here..."
+				},
+				"characters": "{count}/300"
+			},
+			"ratings": {
+				"title": "Content Ratings",
+				"desc": "Choose which content ratings are allowed in each channel type.",
+				"normal": "Normal channels",
+				"nsfw": "NSFW channels",
+				"safe": "Safe",
+				"questionable": "Questionable",
+				"explicit": "Explicit",
+				"normalExplicit": "Explicit content is never allowed in normal channels.",
+				"atLeastOne": "Keep at least one rating enabled."
+			},
+			"channels": {
+				"title": "Channel Overrides",
+				"desc": "Give individual channels a default rating. A channel can only have one override.",
+				"channel": "Channel",
+				"rating": "Rating",
+				"add": "Add channel override",
+				"remove": "Remove override for {channel}",
+				"none": "No channel overrides yet.",
+				"noChannels": "No text channels available.",
+				"unknown": "Unknown channel ({id})",
+				"note": "Overrides set the default rating for new Eggs created in that channel."
+			},
+			"logging": {
+				"title": "Logging",
+				"desc": "Where Server Eggs should log Egg creations and edits.",
+				"logch": {
+					"title": "Log Channel",
+					"desc": "Pick a text channel, or leave this empty to disable logging."
+				},
+				"none": "No logging"
+			},
+			"battles": {
+				"title": "Battles",
+				"time": {
+					"title": "Battle Duration",
+					"desc": "How long a battle stays open for votes."
+				},
+				"minutes": "Minutes"
+			},
+			"save": "Save changes",
+			"reset": "Reset",
+			"saving": "Saving…",
+			"saved": "Settings saved.",
+			"unsaved": "You have unsaved changes.",
+			"errors": {
+				"unauthorized": "You need to sign in again.",
+				"not_found": "That server could not be found.",
+				"bot_missing": "Server Eggs is not installed in this server yet.",
+				"invalid_lang": "Please choose a supported language.",
+				"invalid_ratings": "Keep at least one rating enabled for each channel type.",
+				"explicit_normal": "Explicit content is not allowed in normal channels.",
+				"invalid_channel_ratings": "One or more channel overrides are invalid.",
+				"invalid_logch": "Please choose a valid text channel for logs.",
+				"invalid_battle_time": "Battle duration must be a whole number of minutes between 1 and 1,000,000.",
+				"invite_failed": "Could not create an invite. Make sure Server Eggs can create invites in this server.",
+				"save_failed": "Something went wrong while saving. Please try again.",
+				"unknown": "Something went wrong. Please try again."
+			}
 		}
 	},
 	"footer": {
