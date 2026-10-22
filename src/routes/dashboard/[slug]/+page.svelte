@@ -43,15 +43,20 @@
 
     let formState = $state(initForm());
     let submitting = $state(false);
+    let overrideOrder = $state(initialOverrideOrder());
 
     const textChannels = $derived(
         data.channels.filter((channel) => channel.type === 0 || channel.type === 5)
     );
 
     const channelRatingOverrides = $derived(
-        CHANNEL_RATINGS.flatMap((rating) =>
-            formState.channelRatings[rating].map((id) => ({ id, rating }))
-        )
+        overrideOrder.flatMap((id) => {
+            const rating = CHANNEL_RATINGS.find((entry) =>
+                formState.channelRatings[entry].includes(id)
+            );
+
+            return rating ? [{ id, rating }] : [];
+        })
     );
 
     const usedOverrides = $derived(new Set(channelRatingOverrides.map((entry) => entry.id)));
@@ -91,8 +96,19 @@
         };
     }
 
+    function overrideOrderFrom(ratings: GuildChannelRatings): string[] {
+        const ids = CHANNEL_RATINGS.flatMap((rating) => ratings[rating]);
+
+        return ids.filter((id, index) => ids.indexOf(id) === index);
+    }
+
+    function initialOverrideOrder(): string[] {
+        return overrideOrderFrom(data.settings.channelRatings);
+    }
+
     function resetForm() {
         formState = initForm();
+        overrideOrder = overrideOrderFrom(formState.channelRatings);
     }
 
     function channelName(channel: { name: string; parentId: string | null }): string {
@@ -126,6 +142,7 @@
             ...formState.channelRatings.questionable,
             unused.id
         ];
+        overrideOrder = [...overrideOrder, unused.id];
     }
 
     function removeOverride(id: string) {
@@ -134,16 +151,17 @@
                 (entry) => entry !== id
             );
         }
+
+        overrideOrder = overrideOrder.filter((entry) => entry !== id);
     }
 
     function changeOverrideChannel(oldId: string, newId: string, rating: ChannelRatingKey) {
         if (oldId === newId || usedOverrides.has(newId)) return;
 
-        removeOverride(oldId);
-
-        if (!formState.channelRatings[rating].includes(newId)) {
-            formState.channelRatings[rating] = [...formState.channelRatings[rating], newId];
-        }
+        formState.channelRatings[rating] = formState.channelRatings[rating].map((entry) =>
+            entry === oldId ? newId : entry
+        );
+        overrideOrder = overrideOrder.map((entry) => (entry === oldId ? newId : entry));
     }
 
     function changeOverrideRating(
@@ -220,6 +238,7 @@
                     if (result.type === "success") {
                         await tick();
                         formState = initForm();
+                        overrideOrder = overrideOrderFrom(formState.channelRatings);
                     }
                 } finally {
                     submitting = false;
