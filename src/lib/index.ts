@@ -3,8 +3,6 @@
 /** Content ratings understood by the bot, from least to most restrictive. */
 export const RATINGS = ['SAFE', 'QUESTIONABLE', 'EXPLICIT'] as const;
 
-export type RatingName = (typeof RATINGS)[number];
-
 /** Languages supported by the bot, keyed by their stored code. */
 export const codeToHuman = {
 	en: 'English',

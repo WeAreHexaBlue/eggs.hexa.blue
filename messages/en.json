@@ -103,7 +103,6 @@
 				"safe": "Safe",
 				"questionable": "Questionable",
 				"explicit": "Explicit",
-				"normalExplicit": "Explicit content is never allowed in normal channels.",
 				"atLeastOne": "Keep at least one rating enabled."
 			},
 			"channels": {

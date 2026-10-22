@@ -1,174 +1,30 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { tick } from 'svelte';
 
 	import { RATINGS, botLocales, codeToHuman, isBotLocale } from '$lib';
 	import { m } from '$lib/paraglide/messages';
 	import type { GuildChannelRatings, GuildRatings, Rating } from '$lib/server/db/bot-schema';
+	import type { ChannelRatingKey } from '$lib/server/guild-settings';
 
 	const { data, form } = $props();
 
-	type OverrideRating = 'safe' | 'questionable' | 'explicit';
+	type RatingContext = 'normal' | 'nsfw';
 
-	const CHANNEL_RATINGS: OverrideRating[] = ['safe', 'questionable', 'explicit'];
-	const RATING_CONTEXTS = ['normal', 'nsfw'] as const;
+	const CHANNEL_RATINGS: ChannelRatingKey[] = ['safe', 'questionable', 'explicit'];
+	const RATING_CONTEXTS: RatingContext[] = ['normal', 'nsfw'];
+	const NORMAL_RATINGS = RATINGS.filter((rating) => rating !== 'EXPLICIT');
 
-	const ratingLabel: Record<Rating, () => string> = {
+	const RATING_LABELS: Record<Rating, () => string> = {
 		SAFE: m['dashboard.slug.ratings.safe'],
 		QUESTIONABLE: m['dashboard.slug.ratings.questionable'],
 		EXPLICIT: m['dashboard.slug.ratings.explicit']
 	};
 
-	const channelRatingLabel: Record<OverrideRating, () => string> = {
-		safe: m['dashboard.slug.ratings.safe'],
-		questionable: m['dashboard.slug.ratings.questionable'],
-		explicit: m['dashboard.slug.ratings.explicit']
-	};
-
-	const ratingContextLabel = {
+	const RATING_CONTEXT_LABELS: Record<RatingContext, () => string> = {
 		normal: m['dashboard.slug.ratings.normal'],
 		nsfw: m['dashboard.slug.ratings.nsfw']
 	};
-
-	function initForm() {
-		return {
-			lang: data.settings.lang,
-			allowExtLang: data.settings.allowExtLang,
-			viewJoinButton: data.settings.viewJoinButton,
-
-			description: data.settings.description ?? '',
-			public: data.settings.public,
-
-			ratings: structuredClone(data.settings.ratings) as GuildRatings,
-			channelRatings: structuredClone(data.settings.channelRatings) as GuildChannelRatings,
-
-			logch: data.settings.logch ?? '',
-
-			battleTime: data.settings.battleTime
-		};
-	}
-
-	let formState = $state(initForm());
-	let submitting = $state(false);
-
-	function resetForm() {
-		formState = initForm();
-	}
-
-	const textChannels = $derived(
-		data.channels.filter((channel) => channel.type === 0 || channel.type === 5)
-	);
-
-	const channelRatingOverrides = $derived(
-		CHANNEL_RATINGS.flatMap((rating) =>
-			(formState.channelRatings[rating] ?? []).map((id) => ({ id, rating }))
-		)
-	);
-
-	const usedOverrides = $derived(new Set(channelRatingOverrides.map((entry) => entry.id)));
-
-	const hasUnusedChannel = $derived(textChannels.some((channel) => !usedOverrides.has(channel.id)));
-
-	const descriptionLength = $derived(formState.description.length);
-
-	function channelLabel(id: string): string {
-		const channel = data.channels.find((entry) => entry.id === id);
-
-		if (!channel) return m['dashboard.slug.channels.unknown']({ id });
-
-		const parent = channel.parentId
-			? data.channels.find((entry) => entry.id === channel.parentId)
-			: null;
-
-		return parent ? `${parent.name} / #${channel.name}` : `#${channel.name}`;
-	}
-
-	function channelOptionLabel(channel: { id: string; name: string; parentId: string | null }) {
-		const parent = channel.parentId
-			? data.channels.find((entry) => entry.id === channel.parentId)
-			: null;
-
-		return parent ? `${parent.name} / #${channel.name}` : `#${channel.name}`;
-	}
-
-	function isUsedElsewhere(id: string, except: string) {
-		return channelRatingOverrides.some((entry) => entry.id === id && entry.id !== except);
-	}
-
-	function addOverride() {
-		const unused = textChannels.find((channel) => !usedOverrides.has(channel.id));
-
-		if (!unused) return;
-
-		formState.channelRatings.questionable.push(unused.id);
-	}
-
-	function removeOverride(id: string) {
-		for (const rating of CHANNEL_RATINGS) {
-			formState.channelRatings[rating] = formState.channelRatings[rating].filter(
-				(entry) => entry !== id
-			);
-		}
-	}
-
-	function changeOverrideChannel(oldId: string, newId: string, rating: OverrideRating) {
-		if (oldId === newId || usedOverrides.has(newId)) return;
-
-		removeOverride(oldId);
-
-		if (!formState.channelRatings[rating].includes(newId)) {
-			formState.channelRatings[rating].push(newId);
-		}
-	}
-
-	function changeOverrideRating(id: string, oldRating: OverrideRating, newRating: OverrideRating) {
-		if (oldRating === newRating) return;
-
-		formState.channelRatings[oldRating] = formState.channelRatings[oldRating].filter(
-			(entry) => entry !== id
-		);
-
-		if (!formState.channelRatings[newRating].includes(id)) {
-			formState.channelRatings[newRating].push(id);
-		}
-	}
-
-	function toggleRating(context: 'normal' | 'nsfw', rating: Rating) {
-		if (context === 'normal' && rating === 'EXPLICIT') return;
-
-		const list = formState.ratings[context];
-		const index = list.indexOf(rating);
-
-		if (index === -1) list.push(rating);
-		else if (list.length > 1) list.splice(index, 1);
-	}
-
-	function ratingsKey(ratings: GuildRatings) {
-		return RATING_CONTEXTS.map(
-			(context) =>
-				`${context}:${[...ratings[context]]
-					.sort((a, b) => RATINGS.indexOf(a) - RATINGS.indexOf(b))
-					.join(',')}`
-		).join('|');
-	}
-
-	function channelRatingsKey(ratings: GuildChannelRatings) {
-		return CHANNEL_RATINGS.map(
-			(rating) => `${rating}:${[...ratings[rating]].sort().join(',')}`
-		).join('|');
-	}
-
-	let modified = $derived(
-		formState.lang !== data.settings.lang ||
-			formState.allowExtLang !== data.settings.allowExtLang ||
-			formState.viewJoinButton !== data.settings.viewJoinButton ||
-			formState.description.trim() !== data.settings.description.trim() ||
-			formState.public !== data.settings.public ||
-			ratingsKey(formState.ratings) !== ratingsKey(data.settings.ratings) ||
-			channelRatingsKey(formState.channelRatings) !==
-				channelRatingsKey(data.settings.channelRatings) ||
-			formState.logch !== data.settings.logch ||
-			formState.battleTime !== data.settings.battleTime
-	);
 
 	const errorMessages: Record<string, () => string> = {
 		unauthorized: m['dashboard.slug.errors.unauthorized'],
@@ -185,11 +41,149 @@
 		unknown: m['dashboard.slug.errors.unknown']
 	};
 
-	function errorText(code: string) {
-		return (errorMessages[code] ?? errorMessages.unknown)();
-	}
+	let formState = $state(initForm());
+	let submitting = $state(false);
+
+	const textChannels = $derived(
+		data.channels.filter((channel) => channel.type === 0 || channel.type === 5)
+	);
+
+	const channelRatingOverrides = $derived(
+		CHANNEL_RATINGS.flatMap((rating) =>
+			formState.channelRatings[rating].map((id) => ({ id, rating }))
+		)
+	);
+
+	const usedOverrides = $derived(new Set(channelRatingOverrides.map((entry) => entry.id)));
+
+	const hasUnusedChannel = $derived(textChannels.some((channel) => !usedOverrides.has(channel.id)));
+
+	const descriptionLength = $derived(formState.description.length);
 
 	const currentLangIsSupported = $derived(isBotLocale(formState.lang));
+
+	let modified = $derived(
+		formState.lang !== data.settings.lang ||
+			formState.allowExtLang !== data.settings.allowExtLang ||
+			formState.viewJoinButton !== data.settings.viewJoinButton ||
+			formState.description.trim() !== data.settings.description.trim() ||
+			formState.public !== data.settings.public ||
+			ratingsKey(formState.ratings) !== ratingsKey(data.settings.ratings) ||
+			channelRatingsKey(formState.channelRatings) !==
+				channelRatingsKey(data.settings.channelRatings) ||
+			formState.logch !== data.settings.logch ||
+			formState.battleTime !== data.settings.battleTime
+	);
+
+	function initForm() {
+		return {
+			lang: data.settings.lang,
+			allowExtLang: data.settings.allowExtLang,
+			viewJoinButton: data.settings.viewJoinButton,
+			description: data.settings.description,
+			public: data.settings.public,
+			ratings: structuredClone(data.settings.ratings) as GuildRatings,
+			channelRatings: structuredClone(data.settings.channelRatings) as GuildChannelRatings,
+			logch: data.settings.logch,
+			battleTime: data.settings.battleTime
+		};
+	}
+
+	function resetForm() {
+		formState = initForm();
+	}
+
+	function channelName(channel: { name: string; parentId: string | null }): string {
+		const parent = channel.parentId
+			? data.channels.find((entry) => entry.id === channel.parentId)
+			: null;
+
+		return parent ? `${parent.name} / #${channel.name}` : `#${channel.name}`;
+	}
+
+	function channelLabel(id: string): string {
+		const channel = data.channels.find((entry) => entry.id === id);
+
+		return channel ? channelName(channel) : m['dashboard.slug.channels.unknown']({ id });
+	}
+
+	function channelRatingLabel(rating: ChannelRatingKey): string {
+		return RATING_LABELS[rating.toUpperCase() as Rating]();
+	}
+
+	function isUsedElsewhere(id: string, except: string): boolean {
+		return id !== except && usedOverrides.has(id);
+	}
+
+	function addOverride() {
+		const unused = textChannels.find((channel) => !usedOverrides.has(channel.id));
+
+		if (!unused) return;
+
+		formState.channelRatings.questionable = [...formState.channelRatings.questionable, unused.id];
+	}
+
+	function removeOverride(id: string) {
+		for (const rating of CHANNEL_RATINGS) {
+			formState.channelRatings[rating] = formState.channelRatings[rating].filter(
+				(entry) => entry !== id
+			);
+		}
+	}
+
+	function changeOverrideChannel(oldId: string, newId: string, rating: ChannelRatingKey) {
+		if (oldId === newId || usedOverrides.has(newId)) return;
+
+		removeOverride(oldId);
+
+		if (!formState.channelRatings[rating].includes(newId)) {
+			formState.channelRatings[rating] = [...formState.channelRatings[rating], newId];
+		}
+	}
+
+	function changeOverrideRating(
+		id: string,
+		oldRating: ChannelRatingKey,
+		newRating: ChannelRatingKey
+	) {
+		if (oldRating === newRating) return;
+
+		formState.channelRatings[oldRating] = formState.channelRatings[oldRating].filter(
+			(entry) => entry !== id
+		);
+
+		if (!formState.channelRatings[newRating].includes(id)) {
+			formState.channelRatings[newRating] = [...formState.channelRatings[newRating], id];
+		}
+	}
+
+	function toggleRating(context: RatingContext, rating: Rating) {
+		const current = formState.ratings[context];
+
+		if (current.includes(rating)) {
+			if (current.length > 1) {
+				formState.ratings[context] = current.filter((entry) => entry !== rating);
+			}
+
+			return;
+		}
+
+		formState.ratings[context] = [...current, rating];
+	}
+
+	function ratingsKey(ratings: GuildRatings): string {
+		return RATING_CONTEXTS.map((context) =>
+			[...ratings[context]].sort((a, b) => RATINGS.indexOf(a) - RATINGS.indexOf(b)).join(',')
+		).join('|');
+	}
+
+	function channelRatingsKey(ratings: GuildChannelRatings): string {
+		return CHANNEL_RATINGS.map((rating) => [...ratings[rating]].sort().join(',')).join('|');
+	}
+
+	function errorText(code: string): string {
+		return (errorMessages[code] ?? errorMessages.unknown)();
+	}
 </script>
 
 <svelte:head>
@@ -215,11 +209,16 @@
 			submitting = true;
 
 			return async ({ result, update }) => {
-				submitting = false;
+				try {
+					await update({ reset: false });
 
-				await update({ reset: false });
-
-				if (result.type === 'success') formState = initForm();
+					if (result.type === 'success') {
+						await tick();
+						formState = initForm();
+					}
+				} finally {
+					submitting = false;
+				}
 			};
 		}}
 	>
@@ -230,16 +229,16 @@
 		{/if}
 
 		<section class="section">
-			<span class="section-label">
+			<div class="section-label">
 				<h2>{m['dashboard.slug.general.title']()}</h2>
-			</span>
+			</div>
 
-			<span class="settings-list">
-				<span class="setting-row">
-					<span class="setting-info">
+			<div class="settings-list">
+				<div class="setting-row">
+					<div class="setting-info">
 						<label for="lang">{m['dashboard.slug.general.lang.title']()}</label>
 						<p>{m['dashboard.slug.general.lang.desc']()}</p>
-					</span>
+					</div>
 					<select id="lang" name="lang" bind:value={formState.lang}>
 						{#if !currentLangIsSupported}
 							<option value={formState.lang} disabled>
@@ -250,13 +249,13 @@
 							<option value={locale}>{codeToHuman[locale]}</option>
 						{/each}
 					</select>
-				</span>
+				</div>
 
-				<span class="setting-row">
-					<span class="setting-info">
+				<div class="setting-row">
+					<div class="setting-info">
 						<label for="allowExtLang">{m['dashboard.slug.general.allowExtLang.title']()}</label>
 						<p>{m['dashboard.slug.general.allowExtLang.desc']()}</p>
-					</span>
+					</div>
 					<input
 						class="switch"
 						type="checkbox"
@@ -264,15 +263,15 @@
 						name="allowExtLang"
 						bind:checked={formState.allowExtLang}
 					/>
-				</span>
+				</div>
 
-				<span class="setting-row">
-					<span class="setting-info">
+				<div class="setting-row">
+					<div class="setting-info">
 						<label for="viewJoinButton">
 							{m['dashboard.slug.general.viewJoinButton.title']()}
 						</label>
 						<p>{m['dashboard.slug.general.viewJoinButton.desc']()}</p>
-					</span>
+					</div>
 					<input
 						class="switch"
 						type="checkbox"
@@ -280,21 +279,21 @@
 						name="viewJoinButton"
 						bind:checked={formState.viewJoinButton}
 					/>
-				</span>
-			</span>
+				</div>
+			</div>
 		</section>
 
 		<section class="section">
-			<span class="section-label">
+			<div class="section-label">
 				<h2>{m['dashboard.slug.network.title']()}</h2>
-			</span>
+			</div>
 
-			<span class="settings-list">
-				<span class="setting-row">
-					<span class="setting-info">
+			<div class="settings-list">
+				<div class="setting-row">
+					<div class="setting-info">
 						<label for="public">{m['dashboard.slug.network.public.title']()}</label>
 						<p>{m['dashboard.slug.network.public.desc']()}</p>
-					</span>
+					</div>
 					<input
 						class="switch"
 						type="checkbox"
@@ -302,14 +301,14 @@
 						name="public"
 						bind:checked={formState.public}
 					/>
-				</span>
+				</div>
 
-				<span class="setting-row">
-					<span class="setting-info">
+				<div class="setting-row">
+					<div class="setting-info">
 						<label for="description">{m['dashboard.slug.network.description.title']()}</label>
 						<p>{m['dashboard.slug.network.description.desc']()}</p>
-					</span>
-					<span class="field">
+					</div>
+					<div class="field">
 						<textarea
 							id="description"
 							name="description"
@@ -320,55 +319,48 @@
 						<span class="hint">
 							{m['dashboard.slug.network.characters']({ count: descriptionLength })}
 						</span>
-					</span>
-				</span>
-			</span>
+					</div>
+				</div>
+			</div>
 		</section>
 
 		<section class="section">
-			<span class="section-label">
+			<div class="section-label">
 				<h2>{m['dashboard.slug.ratings.title']()}</h2>
 				<p class="section-desc">{m['dashboard.slug.ratings.desc']()}</p>
-			</span>
+			</div>
 
-			<span class="settings-list">
-				<span class="ratings-grid">
+			<div class="settings-list">
+				<div class="ratings-grid">
 					{#each RATING_CONTEXTS as context (context)}
 						<fieldset class="rating-group">
-							<legend>{ratingContextLabel[context]()}</legend>
-							{#each RATINGS as rating (rating)}
-								<label
-									class="rating-option"
-									class:disabled={context === 'normal' && rating === 'EXPLICIT'}
-								>
+							<legend>{RATING_CONTEXT_LABELS[context]()}</legend>
+							{#each context === 'normal' ? NORMAL_RATINGS : RATINGS as rating (rating)}
+								<label class="rating-option">
 									<input
 										type="checkbox"
 										name={`ratings.${context}`}
 										value={rating}
 										checked={formState.ratings[context].includes(rating)}
-										disabled={context === 'normal' && rating === 'EXPLICIT'}
 										onchange={() => toggleRating(context, rating)}
 									/>
-									<span>{ratingLabel[rating]()}</span>
+									<span>{RATING_LABELS[rating]()}</span>
 								</label>
 							{/each}
-							{#if context === 'normal'}
-								<p class="hint">{m['dashboard.slug.ratings.normalExplicit']()}</p>
-							{/if}
 						</fieldset>
 					{/each}
-				</span>
+				</div>
 				<p class="hint">{m['dashboard.slug.ratings.atLeastOne']()}</p>
-			</span>
+			</div>
 		</section>
 
 		<section class="section">
-			<span class="section-label">
+			<div class="section-label">
 				<h2>{m['dashboard.slug.channels.title']()}</h2>
 				<p class="section-desc">{m['dashboard.slug.channels.desc']()}</p>
-			</span>
+			</div>
 
-			<span class="settings-list">
+			<div class="settings-list">
 				{#if textChannels.length === 0}
 					<p class="hint">{m['dashboard.slug.channels.noChannels']()}</p>
 				{:else if channelRatingOverrides.length === 0}
@@ -385,7 +377,7 @@
 								>
 									{#each textChannels as channel (channel.id)}
 										<option value={channel.id} disabled={isUsedElsewhere(channel.id, override.id)}>
-											{channelOptionLabel(channel)}
+											{channelName(channel)}
 										</option>
 									{/each}
 								</select>
@@ -397,11 +389,11 @@
 										changeOverrideRating(
 											override.id,
 											override.rating,
-											event.currentTarget.value as OverrideRating
+											event.currentTarget.value as ChannelRatingKey
 										)}
 								>
 									{#each CHANNEL_RATINGS as rating (rating)}
-										<option value={rating}>{channelRatingLabel[rating]()}</option>
+										<option value={rating}>{channelRatingLabel(rating)}</option>
 									{/each}
 								</select>
 
@@ -438,21 +430,21 @@
 				</button>
 
 				<p class="hint">{m['dashboard.slug.channels.note']()}</p>
-			</span>
+			</div>
 		</section>
 
 		<section class="section">
-			<span class="section-label">
+			<div class="section-label">
 				<h2>{m['dashboard.slug.logging.title']()}</h2>
 				<p class="section-desc">{m['dashboard.slug.logging.desc']()}</p>
-			</span>
+			</div>
 
-			<span class="settings-list">
-				<span class="setting-row">
-					<span class="setting-info">
+			<div class="settings-list">
+				<div class="setting-row">
+					<div class="setting-info">
 						<label for="logch">{m['dashboard.slug.logging.logch.title']()}</label>
 						<p>{m['dashboard.slug.logging.logch.desc']()}</p>
-					</span>
+					</div>
 					<select id="logch" name="logch" bind:value={formState.logch}>
 						<option value="">{m['dashboard.slug.logging.none']()}</option>
 						{#if formState.logch && !textChannels.some((channel) => channel.id === formState.logch)}
@@ -461,25 +453,25 @@
 							</option>
 						{/if}
 						{#each textChannels as channel (channel.id)}
-							<option value={channel.id}>{channelOptionLabel(channel)}</option>
+							<option value={channel.id}>{channelName(channel)}</option>
 						{/each}
 					</select>
-				</span>
-			</span>
+				</div>
+			</div>
 		</section>
 
 		<section class="section">
-			<span class="section-label">
+			<div class="section-label">
 				<h2>{m['dashboard.slug.battles.title']()}</h2>
-			</span>
+			</div>
 
-			<span class="settings-list">
-				<span class="setting-row">
-					<span class="setting-info">
+			<div class="settings-list">
+				<div class="setting-row">
+					<div class="setting-info">
 						<label for="battleTime">{m['dashboard.slug.battles.time.title']()}</label>
 						<p>{m['dashboard.slug.battles.time.desc']()}</p>
-					</span>
-					<span class="field inline">
+					</div>
+					<div class="field inline">
 						<input
 							id="battleTime"
 							name="battleTime"
@@ -491,9 +483,9 @@
 							bind:value={formState.battleTime}
 						/>
 						<span>{m['dashboard.slug.battles.minutes']()}</span>
-					</span>
-				</span>
-			</span>
+					</div>
+				</div>
+			</div>
 		</section>
 
 		<input type="hidden" name="channelRatings" value={JSON.stringify(formState.channelRatings)} />
@@ -535,15 +527,14 @@
 	}
 
 	.settings {
-		@apply w-full max-w-5xl justify-stretch text-left;
+		@apply w-full max-w-7xl justify-stretch text-left;
 
 		&.busy {
 			@apply cursor-wait;
 		}
 
 		.section {
-			@apply grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-10;
-			@apply items-start rounded-2xl bg-mist-900 p-6;
+			@apply grid grid-cols-1 items-start gap-6 rounded-2xl bg-mist-900 p-6 md:grid-cols-3 md:gap-10 lg:p-8;
 
 			.section-label {
 				@apply text-left md:col-span-1;
@@ -558,10 +549,10 @@
 			}
 
 			.settings-list {
-				@apply space-y-4 text-left md:col-span-2;
+				@apply grid gap-4 text-left md:col-span-2;
 
 				.setting-row {
-					@apply grid gap-4 pt-6 first:pt-0 sm:grid-cols-2 sm:items-center;
+					@apply grid gap-4 sm:grid-cols-2 sm:items-center;
 
 					.setting-info {
 						@apply space-y-1 text-left;
@@ -635,10 +626,6 @@
 	.rating-option {
 		@apply flex cursor-pointer items-center gap-2 text-sm;
 
-		&.disabled {
-			@apply cursor-not-allowed opacity-40;
-		}
-
 		input {
 			@apply size-4 accent-blurple;
 		}
@@ -646,6 +633,10 @@
 
 	.override-list {
 		@apply m-0 grid list-none gap-2 p-0;
+
+		li {
+			@apply list-none;
+		}
 	}
 
 	.override-row {
@@ -672,7 +663,7 @@
 	}
 
 	.add-override {
-		@apply w-fit rounded-xl border border-white/15 px-3 py-2 text-sm font-semibold transition-colors;
+		@apply w-fit justify-self-start rounded-xl border border-white/15 px-3 py-2 text-sm font-semibold transition-colors;
 		@apply hover:border-white/40 hover:bg-mist-950;
 		@apply disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-white/15 disabled:hover:bg-transparent;
 	}

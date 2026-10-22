@@ -31,8 +31,7 @@ export async function load({ locals, request, url }) {
 				name: guild.name,
 				icon: iconUrl(guild.id, guild.icon),
 				hasBot,
-				href: hasBot ? `/dashboard/${guild.id}` : botOAuthUrl(guild.id),
-				addUrl: hasBot ? null : botOAuthUrl(guild.id)
+				href: hasBot ? `/dashboard/${guild.id}` : botOAuthUrl(guild.id)
 			};
 		})
 		.sort((a, b) => a.name.localeCompare(b.name));

@@ -1,7 +1,6 @@
 import { RATINGS } from '$lib';
 import type { GuildChannelRatings, GuildRatings, Rating } from '$lib/server/db/bot-schema';
 
-export { RATINGS };
 export const CHANNEL_RATING_KEYS = ['safe', 'questionable', 'explicit'] as const;
 
 export type ChannelRatingKey = (typeof CHANNEL_RATING_KEYS)[number];
@@ -15,11 +14,11 @@ export const DEFAULT_RATINGS: GuildRatings = {
 	nsfw: ['SAFE', 'QUESTIONABLE', 'EXPLICIT']
 };
 
-export const EMPTY_CHANNEL_RATINGS: GuildChannelRatings = {
-	safe: [],
-	questionable: [],
-	explicit: []
-};
+function emptyChannelRatings(): GuildChannelRatings {
+	return { safe: [], questionable: [], explicit: [] };
+}
+
+export const EMPTY_CHANNEL_RATINGS: GuildChannelRatings = emptyChannelRatings();
 
 export function isRating(value: unknown): value is Rating {
 	return typeof value === 'string' && (RATINGS as readonly string[]).includes(value);
@@ -46,7 +45,7 @@ export function normalizeRatings(value: unknown): GuildRatings {
 
 export function normalizeChannelRatings(value: unknown): GuildChannelRatings {
 	const data = value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
-	const result: GuildChannelRatings = { safe: [], questionable: [], explicit: [] };
+	const result = emptyChannelRatings();
 	const seen = new Set<string>();
 
 	for (const key of CHANNEL_RATING_KEYS) {
@@ -80,19 +79,22 @@ export function parseChannelRatingsJson(raw: string): GuildChannelRatings {
 
 		return normalizeChannelRatings(JSON.parse(safe));
 	} catch {
-		return { ...EMPTY_CHANNEL_RATINGS, safe: [], questionable: [], explicit: [] };
+		return emptyChannelRatings();
 	}
 }
 
 /** Builds a jsonb literal with unquoted numeric IDs, matching the bot's format. */
 export function serializeChannelRatings(value: GuildChannelRatings): string {
-	return `{${CHANNEL_RATING_KEYS.map(
-		(key) =>
-			`"${key}":[${value[key]
-				.filter((id) => /^\d+$/.test(id))
-				.map((id) => BigInt(id).toString())
-				.join(',')}]`
-	).join(',')}}`;
+	const lists = CHANNEL_RATING_KEYS.map((key) => {
+		const ids = value[key]
+			.filter((id) => /^\d+$/.test(id))
+			.map((id) => BigInt(id).toString())
+			.join(',');
+
+		return `"${key}":[${ids}]`;
+	});
+
+	return `{${lists.join(',')}}`;
 }
 
 export function minutesToMicroseconds(minutes: number): number {

@@ -103,7 +103,6 @@
 				"safe": "Sicuro",
 				"questionable": "Dubbio",
 				"explicit": "Esplicito",
-				"normalExplicit": "I contenuti espliciti non sono mai permessi nei canali per tutte le età.",
 				"atLeastOne": "Mantieni attiva almeno una classificazione."
 			},
 			"channels": {

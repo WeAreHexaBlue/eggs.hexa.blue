@@ -1,21 +1,22 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 
+import { RATINGS, isBotLocale } from '$lib';
 import { db } from '$lib/server/db';
 import { guild } from '$lib/server/db/bot-schema';
 import {
+	CHANNEL_RATING_KEYS,
 	DEFAULT_BATTLE_MINUTES,
 	DEFAULT_RATINGS,
 	EMPTY_CHANNEL_RATINGS,
+	isChannelRatingKey,
 	isRating,
 	minutesToMicroseconds,
 	microsecondsToMinutes,
 	normalizeChannelRatings,
 	normalizeRatings,
 	parseChannelRatingsJson,
-	RATINGS,
-	serializeChannelRatings,
-	type ChannelRatingKey
+	serializeChannelRatings
 } from '$lib/server/guild-settings';
 import {
 	botOAuthUrl,
@@ -26,7 +27,6 @@ import {
 	manageCheck,
 	protect
 } from '$lib/server/utils';
-import { isBotLocale } from '$lib';
 
 const SETTINGS_SELECTION = {
 	id: guild.id,
@@ -41,13 +41,14 @@ const SETTINGS_SELECTION = {
 	channelRatingsRaw: sql<string>`${guild.channelRatings}::text`
 };
 
-async function getOrCreateGuildRow(id: bigint) {
-	const [existing] = await db
-		.select(SETTINGS_SELECTION)
-		.from(guild)
-		.where(eq(guild.id, id))
-		.limit(1);
+async function findGuildRow(id: bigint) {
+	const [row] = await db.select(SETTINGS_SELECTION).from(guild).where(eq(guild.id, id)).limit(1);
 
+	return row;
+}
+
+async function getOrCreateGuildRow(id: bigint) {
+	const existing = await findGuildRow(id);
 	if (existing) return existing;
 
 	await db
@@ -66,11 +67,7 @@ async function getOrCreateGuildRow(id: bigint) {
 		})
 		.onConflictDoNothing();
 
-	const [created] = await db
-		.select(SETTINGS_SELECTION)
-		.from(guild)
-		.where(eq(guild.id, id))
-		.limit(1);
+	const created = await findGuildRow(id);
 
 	if (!created) throw new Error('Could not create guild settings row.');
 
@@ -89,69 +86,32 @@ function bannerUrl(guildId: string, banner: string | null | undefined): string |
 	return `https://cdn.discordapp.com/banners/${guildId}/${banner}.${banner.startsWith('a_') ? 'gif' : 'png'}?size=600`;
 }
 
-function textChannels(channels: DiscordChannel[]) {
-	return channels.filter((channel) => channel.type === 0 || channel.type === 5);
+function isTextChannel(channel: DiscordChannel): boolean {
+	return channel.type === 0 || channel.type === 5;
 }
 
-export async function load({ locals, request, params }) {
-	if (!locals.user) await protect(request, `/dashboard/${params.slug}`);
+function textChannels(channels: DiscordChannel[]): DiscordChannel[] {
+	return channels.filter(isTextChannel);
+}
 
-	if (!/^\d+$/.test(params.slug)) redirect(303, '/dashboard');
+function inviteChannel(botGuild: DiscordGuild, channels: DiscordChannel[]): string | null {
+	const available = textChannels(channels);
 
-	const userGuild = await getGuild(locals, request, params);
-	manageCheck(userGuild);
+	if (botGuild.rules_channel_id) {
+		const rules = available.find((channel) => channel.id === botGuild.rules_channel_id);
+		if (rules) return rules.id;
+	}
 
-	const botGuild = await fetchBotGuild(params.slug);
-
-	if (!botGuild) redirect(302, botOAuthUrl(params.slug));
-
-	const rawChannels = await fetchGuildChannels(params.slug);
-	const channels = rawChannels
-		.map((channel) => ({
-			id: channel.id,
-			name: channel.name,
-			type: channel.type,
-			position: channel.position,
-			parentId: channel.parent_id
-		}))
-		.sort((a, b) => a.position - b.position);
-
-	const row = await getOrCreateGuildRow(BigInt(params.slug));
-
-	const settings = {
-		lang: row.lang,
-		allowExtLang: row.allowExtLang,
-		description: row.description ?? '',
-		invite: row.invite,
-		public: Boolean(row.invite),
-		logch: row.logch?.toString() ?? '',
-		ratings: normalizeRatings(row.ratings),
-		viewJoinButton: row.viewJoinButton,
-		battleTime: microsecondsToMinutes(Number(row.battleTime)),
-		channelRatings: parseChannelRatingsJson(row.channelRatingsRaw)
-	};
-
-	return {
-		user: locals.user,
-		guild: {
-			id: params.slug,
-			name: botGuild.name ?? userGuild.name,
-			icon: iconUrl(params.slug, botGuild.icon ?? userGuild.icon),
-			banner: bannerUrl(params.slug, botGuild.banner),
-			...settings
-		},
-		settings,
-		channels
-	};
+	return available.find((channel) => channel.type === 0)?.id ?? available[0]?.id ?? null;
 }
 
 function collectRatings(data: FormData, name: string) {
-	const values = data
+	return data
 		.getAll(name)
-		.map((value) => String(value))
-		.filter(isRating);
-
-	return [...new Set(values)].sort((a, b) => RATINGS.indexOf(a) - RATINGS.indexOf(b));
+		.map(String)
+		.filter(isRating)
+		.filter((rating, index, all) => all.indexOf(rating) === index)
+		.sort((a, b) => RATINGS.indexOf(a) - RATINGS.indexOf(b));
 }
 
 function parseChannelRatingsInput(
@@ -170,36 +130,70 @@ function parseChannelRatingsInput(
 	if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
 
 	const record = parsed as Record<string, unknown>;
+	const keys = Object.keys(record);
 
-	for (const key of Object.keys(record)) {
-		if (!['safe', 'questionable', 'explicit'].includes(key)) return null;
-		if (!Array.isArray(record[key])) return null;
-	}
+	if (keys.some((key) => !isChannelRatingKey(key))) return null;
+	if (CHANNEL_RATING_KEYS.some((key) => !Array.isArray(record[key]))) return null;
 
 	const normalized = normalizeChannelRatings(record);
-	const count = (['safe', 'questionable', 'explicit'] as ChannelRatingKey[]).reduce(
+	const normalizedCount = CHANNEL_RATING_KEYS.reduce(
 		(total, key) => total + normalized[key].length,
 		0
 	);
-	const inputCount = (['safe', 'questionable', 'explicit'] as ChannelRatingKey[]).reduce(
+	const inputCount = CHANNEL_RATING_KEYS.reduce(
 		(total, key) => total + (record[key] as unknown[]).length,
 		0
 	);
 
-	if (count !== inputCount) return null;
-
-	return normalized;
+	// A mismatch means an entry was invalid or duplicated.
+	return normalizedCount === inputCount ? normalized : null;
 }
 
-function inviteChannel(botGuild: DiscordGuild, channels: DiscordChannel[]): string | null {
-	const available = textChannels(channels);
+export async function load({ locals, request, params }) {
+	if (!locals.user) await protect(request, `/dashboard/${params.slug}`);
 
-	if (botGuild.rules_channel_id) {
-		const rules = available.find((channel) => channel.id === botGuild.rules_channel_id);
-		if (rules) return rules.id;
-	}
+	if (!/^\d+$/.test(params.slug)) redirect(303, '/dashboard');
 
-	return available.find((channel) => channel.type === 0)?.id ?? available[0]?.id ?? null;
+	const userGuild = await getGuild(locals, request, params);
+	manageCheck(userGuild);
+
+	const botGuild = await fetchBotGuild(params.slug);
+
+	if (!botGuild) redirect(302, botOAuthUrl(params.slug));
+
+	const channels = (await fetchGuildChannels(params.slug))
+		.map((channel) => ({
+			id: channel.id,
+			name: channel.name,
+			type: channel.type,
+			position: channel.position,
+			parentId: channel.parent_id
+		}))
+		.sort((a, b) => a.position - b.position);
+
+	const row = await getOrCreateGuildRow(BigInt(params.slug));
+
+	return {
+		user: locals.user,
+		guild: {
+			id: params.slug,
+			name: botGuild.name ?? userGuild.name,
+			icon: iconUrl(params.slug, botGuild.icon ?? userGuild.icon),
+			banner: bannerUrl(params.slug, botGuild.banner)
+		},
+		settings: {
+			lang: row.lang,
+			allowExtLang: row.allowExtLang,
+			viewJoinButton: row.viewJoinButton,
+			description: row.description ?? '',
+			public: Boolean(row.invite),
+			logch: row.logch?.toString() ?? '',
+			ratings: normalizeRatings(row.ratings),
+			channelRatings: parseChannelRatingsJson(row.channelRatingsRaw),
+			battleTime: microsecondsToMinutes(Number(row.battleTime))
+		},
+		channels
+	};
 }
 
 export const actions = {
@@ -220,14 +214,6 @@ export const actions = {
 
 		if (!isBotLocale(lang)) return fail(400, { error: 'invalid_lang' });
 
-		const allowExtLang = data.get('allowExtLang') === 'on';
-		const viewJoinButton = data.get('viewJoinButton') === 'on';
-		const isPublic = data.get('public') === 'on';
-		const description =
-			String(data.get('description') ?? '')
-				.trim()
-				.slice(0, 300) || null;
-
 		const normalRatings = collectRatings(data, 'ratings.normal');
 		const nsfwRatings = collectRatings(data, 'ratings.nsfw');
 
@@ -244,16 +230,18 @@ export const actions = {
 		if (!channelRatings) return fail(400, { error: 'invalid_channel_ratings' });
 
 		const channels = await fetchGuildChannels(params.slug);
-
 		const logchValue = String(data.get('logch') ?? '');
 
 		if (logchValue && !/^\d+$/.test(logchValue)) {
 			return fail(400, { error: 'invalid_logch' });
 		}
 
-		if (logchValue && channels.length > 0) {
-			const channel = textChannels(channels).find((entry) => entry.id === logchValue);
-			if (!channel) return fail(400, { error: 'invalid_logch' });
+		if (
+			logchValue &&
+			channels.length > 0 &&
+			!textChannels(channels).some((channel) => channel.id === logchValue)
+		) {
+			return fail(400, { error: 'invalid_logch' });
 		}
 
 		const battleMinutes = Number(data.get('battleTime'));
@@ -263,7 +251,7 @@ export const actions = {
 		}
 
 		const current = await getOrCreateGuildRow(BigInt(params.slug));
-
+		const isPublic = data.get('public') === 'on';
 		let invite = current.invite;
 
 		if (isPublic && !invite) {
@@ -283,12 +271,15 @@ export const actions = {
 				.update(guild)
 				.set({
 					lang,
-					allowExtLang,
-					description,
+					allowExtLang: data.get('allowExtLang') === 'on',
+					viewJoinButton: data.get('viewJoinButton') === 'on',
+					description:
+						String(data.get('description') ?? '')
+							.trim()
+							.slice(0, 300) || null,
 					invite,
 					logch: logchValue ? BigInt(logchValue) : null,
 					ratings: { normal: normalRatings, nsfw: nsfwRatings },
-					viewJoinButton,
 					battleTime: minutesToMicroseconds(battleMinutes),
 					channelRatings: sql`${serializeChannelRatings(channelRatings)}::jsonb`
 				})

@@ -17,6 +17,10 @@ const BOT_GUILD_CACHE_TTL = 60_000;
 
 type DiscordAccount = typeof account.$inferSelect;
 
+function botHeaders(extra: Record<string, string> = {}): Record<string, string> {
+	return { Authorization: `Bot ${env.DISCORD_TOKEN}`, ...extra };
+}
+
 export function canManage(guild: DiscordPartialGuild): boolean {
 	const permissions = BigInt(guild.permissions ?? '0');
 
@@ -167,9 +171,9 @@ async function fetchUserGuilds(
 export async function getGuilds(
 	locals: App.Locals,
 	request: Request,
-	params?: { slug?: string }
+	slug?: string
 ): Promise<DiscordPartialGuild[]> {
-	return fetchUserGuilds(locals, request, `/dashboard/${params?.slug ?? ''}`);
+	return fetchUserGuilds(locals, request, slug ? `/dashboard/${slug}` : '/dashboard');
 }
 
 export async function getGuild(
@@ -177,7 +181,7 @@ export async function getGuild(
 	request: Request,
 	params: { slug: string }
 ): Promise<DiscordPartialGuild> {
-	const guilds = await getGuilds(locals, request, params);
+	const guilds = await getGuilds(locals, request, params.slug);
 	const guild = guilds.find((g) => g.id === params.slug);
 
 	if (!guild) error(404, 'Server not found.');
@@ -202,9 +206,7 @@ export async function getBotGuildIds(): Promise<Set<string>> {
 		url.searchParams.set('limit', '200');
 		if (after) url.searchParams.set('after', after);
 
-		const res = await fetch(url, {
-			headers: { Authorization: `Bot ${env.DISCORD_TOKEN}` }
-		});
+		const res = await fetch(url, { headers: botHeaders() });
 
 		if (!res.ok) break;
 
@@ -227,7 +229,7 @@ export async function getBotGuildIds(): Promise<Set<string>> {
 
 export async function fetchBotGuild(guildId: string): Promise<DiscordGuild | null> {
 	const res = await fetch(`${DISCORD_API}/guilds/${guildId}?with_counts=true`, {
-		headers: { Authorization: `Bot ${env.DISCORD_TOKEN}` }
+		headers: botHeaders()
 	});
 
 	if (!res.ok) return null;
@@ -237,7 +239,7 @@ export async function fetchBotGuild(guildId: string): Promise<DiscordGuild | nul
 
 export async function fetchGuildChannels(guildId: string): Promise<DiscordChannel[]> {
 	const res = await fetch(`${DISCORD_API}/guilds/${guildId}/channels`, {
-		headers: { Authorization: `Bot ${env.DISCORD_TOKEN}` }
+		headers: botHeaders()
 	});
 
 	if (!res.ok) return [];
@@ -250,10 +252,7 @@ export async function fetchGuildChannels(guildId: string): Promise<DiscordChanne
 export async function createGuildInvite(channelId: string): Promise<string | null> {
 	const res = await fetch(`${DISCORD_API}/channels/${channelId}/invites`, {
 		method: 'POST',
-		headers: {
-			Authorization: `Bot ${env.DISCORD_TOKEN}`,
-			'content-type': 'application/json'
-		},
+		headers: botHeaders({ 'content-type': 'application/json' }),
 		body: JSON.stringify({ max_age: 0, max_uses: 0, unique: false })
 	});
 
