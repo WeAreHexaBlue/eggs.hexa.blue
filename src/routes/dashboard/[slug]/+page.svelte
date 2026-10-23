@@ -228,6 +228,7 @@
         method="POST"
         class="sect settings"
         class:busy={submitting}
+        class:has-popup={modified || submitting}
         use:enhance={() => {
             submitting = true;
 
@@ -531,28 +532,39 @@
             value={JSON.stringify(formState.channelRatings)}
         />
 
-        <div class="savebar">
-            <span class="save-status">
-                {#if submitting}
-                    {m["dashboard.slug.saving"]()}
-                {:else if modified}
-                    {m["dashboard.slug.unsaved"]()}
-                {/if}
-            </span>
-            <span class="save-actions">
-                <button
-                    type="button"
-                    class="secondary"
-                    disabled={!modified || submitting}
-                    onclick={resetForm}
-                >
-                    {m["dashboard.slug.reset"]()}
-                </button>
-                <button type="submit" class="primary" disabled={!modified || submitting}>
-                    {m["dashboard.slug.save"]()}
-                </button>
-            </span>
-        </div>
+        {#if modified || submitting}
+            <div class="save-popup" role="dialog" aria-labelledby="save-popup-title">
+                <span class="save-popup-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 9v4m0 4h.01M10.3 3.9 2.4 17.5A1.7 1.7 0 0 0 3.9 20h16.2a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3 0Z"
+                        />
+                    </svg>
+                </span>
+                <span id="save-popup-title" class="save-popup-status">
+                    {#if submitting}
+                        {m["dashboard.slug.saving"]()}
+                    {:else}
+                        {m["dashboard.slug.unsaved"]()}
+                    {/if}
+                </span>
+                <span class="save-popup-actions">
+                    <button
+                        type="button"
+                        class="secondary"
+                        disabled={submitting}
+                        onclick={resetForm}
+                    >
+                        {m["dashboard.slug.reset"]()}
+                    </button>
+                    <button type="submit" class="primary" disabled={submitting}>
+                        {m["dashboard.slug.save"]()}
+                    </button>
+                </span>
+            </div>
+        {/if}
     </form>
 </main>
 
@@ -572,6 +584,10 @@
 
         &.busy {
             @apply cursor-wait;
+        }
+
+        &.has-popup {
+            @apply pb-32 sm:pb-24;
         }
 
         .section {
@@ -725,16 +741,26 @@
         }
     }
 
-    .savebar {
-        @apply mt-2 flex flex-wrap items-center justify-between gap-3;
-        @apply rounded-2xl border border-white/10 bg-mist-950 px-4 py-3;
+    .save-popup {
+        @apply fixed inset-x-4 bottom-4 z-50 flex flex-wrap items-center gap-3;
+        @apply rounded-2xl border border-white/15 bg-mist-950 px-4 py-3 shadow-2xl shadow-black/40;
+        @apply sm:inset-x-0 sm:bottom-6 sm:mx-auto sm:max-w-xl sm:flex-nowrap;
+        animation: save-popup-in 180ms ease-out;
 
-        .save-status {
-            @apply text-sm text-mist-400;
+        .save-popup-icon {
+            @apply flex size-8 shrink-0 items-center justify-center rounded-full bg-amber-400/15 text-amber-300;
+
+            svg {
+                @apply size-4;
+            }
         }
 
-        .save-actions {
-            @apply flex items-center gap-2;
+        .save-popup-status {
+            @apply min-w-0 flex-1 text-sm font-medium text-white;
+        }
+
+        .save-popup-actions {
+            @apply flex w-full items-center justify-end gap-2 sm:w-auto;
         }
 
         button {
@@ -751,6 +777,19 @@
 
         .secondary {
             @apply border border-white/15 hover:border-white/40;
+        }
+    }
+
+    @keyframes save-popup-in {
+        from {
+            opacity: 0;
+            transform: translateY(0.75rem);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .save-popup {
+            animation: none;
         }
     }
 </style>

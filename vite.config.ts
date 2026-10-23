@@ -26,5 +26,10 @@ export default defineConfig({
             outdir: "./src/lib/paraglide",
             emitTsDeclarations: true
         })
-    ]
+    ],
+    // server: {
+    //     allowedHosts: [
+    //         "eggs.preview.hexa.blue"
+    //     ]
+    // }
 });
