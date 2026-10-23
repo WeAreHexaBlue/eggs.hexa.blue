@@ -27,9 +27,9 @@ export default defineConfig({
             emitTsDeclarations: true
         })
     ],
-    // server: {
-    //     allowedHosts: [
-    //         "eggs.preview.hexa.blue"
-    //     ]
-    // }
+    server: {
+        allowedHosts: [
+            "eggs.preview.hexa.blue"
+        ]
+    }
 });

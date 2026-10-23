@@ -50,7 +50,7 @@
             }
         },
         "embed": {
-            "description": "A silly content-sharing Discord bot that grows your community. Create, share, collect, and battle with Eggs!",
+            "description": "A silly **content-sharing** Discord bot that **grows your community**. Create, share, collect, and battle with **Egg**s!",
             "add": "Add to Discord",
             "dashboard": "Dashboard",
             "support": "Support",
