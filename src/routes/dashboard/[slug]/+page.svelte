@@ -2,7 +2,7 @@
     import { enhance } from "$app/forms";
     import { tick } from "svelte";
 
-    import { RATINGS, botLocales, codeToHuman, isBotLocale } from "$lib";
+    import { RATINGS } from "$lib";
     import { m } from "$lib/paraglide/messages";
     import type { GuildChannelRatings, GuildRatings, Rating } from "$lib/server/db/bot-schema";
     import type { ChannelRatingKey } from "$lib/server/guild-settings";
@@ -67,7 +67,9 @@
 
     const descriptionLength = $derived(formState.description.length);
 
-    const currentLangIsSupported = $derived(isBotLocale(formState.lang));
+    const currentLangIsSupported = $derived(
+        data.languages.some((language) => language.code === formState.lang)
+    );
 
     let modified = $derived(
         formState.lang !== data.settings.lang ||
@@ -272,8 +274,8 @@
                                 })}
                             </option>
                         {/if}
-                        {#each botLocales as locale (locale)}
-                            <option value={locale}>{codeToHuman[locale]}</option>
+                        {#each data.languages as language (language.code)}
+                            <option value={language.code}>{language.name}</option>
                         {/each}
                     </select>
                 </div>

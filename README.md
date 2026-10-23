@@ -18,7 +18,8 @@ edited here take effect in the bot immediately and vice versa.
 ```sh
 bun install
 cp .env.example .env
-# Fill in DATABASE_URL, ORIGIN, BETTER_AUTH_SECRET, and the Discord credentials.
+# Fill in DATABASE_URL, ORIGIN, BETTER_AUTH_SECRET, DISCORD_*, and BOT_LANG_DIR.
+# BOT_LANG_DIR must be the absolute path to the bot's `lang` directory.
 bun run db:push   # create the auth schema; bot tables must already exist
 bun run dev
 ```
@@ -48,3 +49,8 @@ already have the bot, you can edit:
 - per-channel default ratings
 - the log channel
 - battle duration
+
+The server language list is read from the bot's `lang` directory at runtime, so
+adding a `lang/<code>.json` file to the bot is enough to make it selectable in
+the dashboard (within a minute, without a restart). `BOT_LANG_DIR` must point at
+that directory; the dashboard returns an error when it is missing or unreadable.

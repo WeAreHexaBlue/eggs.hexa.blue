@@ -1,7 +1,6 @@
 <script lang="ts">
     import { resolve } from "$app/paths";
     import { authClient } from "$lib/auth-client";
-    import { codeToHuman } from "$lib";
 
     import { m } from "$lib/paraglide/messages";
 
@@ -12,6 +11,11 @@
     import logo from "$lib/assets/seggs.svg";
 
     import { getLocale, locales, setLocale, type Locale } from "$lib/paraglide/runtime";
+
+    const LOCALE_NAMES: Record<Locale, string> = {
+        en: "English",
+        it: "Italiano"
+    };
 
     const session = authClient.useSession();
 
@@ -126,7 +130,7 @@
                 class="bg-neutral-900 text-white"
                 selected={getLocale() === locale}
             >
-                {codeToHuman[locale]}
+                {LOCALE_NAMES[locale]}
             </option>
         {/each}
     </select>

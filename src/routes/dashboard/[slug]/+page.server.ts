@@ -1,8 +1,9 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { eq, sql } from "drizzle-orm";
 
-import { RATINGS, isBotLocale } from "$lib";
+import { RATINGS } from "$lib";
 import { db } from "$lib/server/db";
+import { getBotLanguages } from "$lib/server/languages";
 import { guild } from "$lib/server/db/bot-schema";
 import {
     CHANNEL_RATING_KEYS,
@@ -140,6 +141,7 @@ export async function load({ locals, request, params }) {
     const userGuild = await getGuild(locals, request, params);
     manageCheck(userGuild);
 
+    const languages = await getBotLanguages();
     const botGuild = await fetchBotGuild(params.slug);
 
     if (!botGuild) redirect(302, botOAuthUrl(params.slug));
@@ -173,6 +175,7 @@ export async function load({ locals, request, params }) {
             channelRatings: parseChannelRatingsJson(row.channelRatingsRaw),
             battleTime: microsecondsToMinutes(Number(row.battleTime))
         },
+        languages,
         channels
     };
 }
@@ -189,11 +192,14 @@ export const actions = {
 
         if (!botGuild) return fail(409, { error: "bot_missing" });
 
+        const languages = await getBotLanguages();
         const data = await request.formData();
 
         const lang = String(data.get("lang") ?? "");
 
-        if (!isBotLocale(lang)) return fail(400, { error: "invalid_lang" });
+        if (!languages.some((language) => language.code === lang)) {
+            return fail(400, { error: "invalid_lang" });
+        }
 
         const normalRatings = collectRatings(data, "ratings.normal");
         const nsfwRatings = collectRatings(data, "ratings.nsfw");
