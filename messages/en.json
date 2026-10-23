@@ -86,7 +86,7 @@
                 "title": "Global Egg Network",
                 "public": {
                     "title": "Public Server",
-                    "desc": "Allow anyone who sees an Egg from this server to join it. An invite will be created automatically."
+                    "desc": "Allow anyone who sees an Egg from this server to join it."
                 },
                 "description": {
                     "title": "Server Description",
@@ -106,8 +106,8 @@
                 "atLeastOne": "Keep at least one rating enabled."
             },
             "channels": {
-                "title": "Channel Overrides",
-                "desc": "Give individual channels a default rating. A channel can only have one override.",
+                "title": "Default Ratings",
+                "desc": "Give individual channels a default rating.",
                 "channel": "Channel",
                 "rating": "Rating",
                 "add": "Add channel override",
@@ -148,7 +148,7 @@
                 "explicit_normal": "Explicit content is not allowed in normal channels.",
                 "invalid_channel_ratings": "One or more channel overrides are invalid.",
                 "invalid_logch": "Please choose a valid text channel for logs.",
-                "invalid_battle_time": "Battle duration must be a whole number of minutes between 1 and 1,000,000.",
+                "invalid_battle_time": "Battle duration must be a whole number of minutes.",
                 "invite_failed": "Could not create an invite. Make sure Server Eggs can create invites in this server.",
                 "save_failed": "Something went wrong while saving. Please try again.",
                 "unknown": "Something went wrong. Please try again."

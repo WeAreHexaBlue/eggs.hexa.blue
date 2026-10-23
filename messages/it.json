@@ -86,7 +86,7 @@
                 "title": "Rete Globale delle Uova",
                 "public": {
                     "title": "Server Pubblico",
-                    "desc": "Consenti a chiunque veda un Uovo di questo server di unirsi. Verrà creato automaticamente un invito."
+                    "desc": "Consenti a chiunque veda un Uovo di questo server di unirsi."
                 },
                 "description": {
                     "title": "Descrizione del Server",
@@ -106,8 +106,8 @@
                 "atLeastOne": "Mantieni attiva almeno una classificazione."
             },
             "channels": {
-                "title": "Override dei Canali",
-                "desc": "Assegna una classificazione predefinita a singoli canali. Un canale può avere un solo override.",
+                "title": "Classificazioni Predefinite",
+                "desc": "Assegna una classificazione predefinita a singoli canali.",
                 "channel": "Canale",
                 "rating": "Classificazione",
                 "add": "Aggiungi override del canale",
@@ -148,7 +148,7 @@
                 "explicit_normal": "I contenuti espliciti non sono permessi nei canali per tutte le età.",
                 "invalid_channel_ratings": "Uno o più override dei canali non sono validi.",
                 "invalid_logch": "Scegli un canale di testo valido per il registro.",
-                "invalid_battle_time": "La durata della battaglia deve essere un numero intero di minuti tra 1 e 1.000.000.",
+                "invalid_battle_time": "La durata della battaglia deve essere un numero intero di minuti.",
                 "invite_failed": "Impossibile creare un invito. Assicurati che Server Eggs possa creare inviti in questo server.",
                 "save_failed": "Qualcosa è andato storto durante il salvataggio. Riprova.",
                 "unknown": "Qualcosa è andato storto. Riprova."
