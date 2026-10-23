@@ -2,11 +2,16 @@
     import { resolve } from "$app/paths";
     import { m } from "$lib/paraglide/messages";
 
+    import DiscordEmbed from "$lib/components/discord-embed.svelte";
+
     import seggs from "$lib/assets/seggs.svg";
+    import banner from "$lib/assets/banner.png";
 
     import card0 from "$lib/assets/cards/card0.png";
     import card1 from "$lib/assets/cards/card1.png";
     import card2 from "$lib/assets/cards/card2.png";
+
+    const DISCOVERY_URL = "https://discord.com/discovery/applications/886686500845138041";
 
     const cards = [
         { src: card0, alt: "Promotional Card 1" },
@@ -28,16 +33,22 @@
 <svelte:head>
     <title>{m.seggs()}</title>
 </svelte:head>
+
+<DiscordEmbed
+    title={m.seggs()}
+    description={m["home.embed.description"]()}
+    images={[banner]}
+    primaryButton={{ label: m["home.embed.add"](), url: DISCOVERY_URL }}
+    buttons={[
+        { label: m["home.embed.dashboard"](), url: resolve("/dashboard") },
+        { label: m["home.embed.support"](), url: "https://discord.gg/G9vfEZGZnT" },
+        { label: m["home.embed.source"](), url: "https://github.com/WeAreHexaBlue/ServerEggs" }
+    ]}
+/>
+
 <main>
     {#snippet ctabtn()}
-        <button
-            id="cta"
-            onclick={() =>
-                window.open(
-                    "https://discord.com/discovery/applications/886686500845138041",
-                    "_blank"
-                )}
-        >
+        <button id="cta" onclick={() => window.open(DISCOVERY_URL, "_blank")}>
             {@html m["home.cta.button"]()}
         </button>
     {/snippet}

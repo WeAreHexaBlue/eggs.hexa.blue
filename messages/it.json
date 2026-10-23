@@ -49,6 +49,13 @@
                 "desc": "Se decidi di <b>sostenere la missione open source di Server Eggs</b> per soli <i>1,72 EUR/mese</i> (il prezzo minimo permesso da Discord), puoi avere <b>benefici extra</b>, tipo <b>ricevere un nuovo Uovo giornaliero per la tua collezione</b>, <b>avere una maggior possibilità di trovare Uova segrete</b>, e <b>limiti più comodi</b>!"
             }
         },
+        "embed": {
+            "description": "Un simpatico bot Discord per condividere contenuti che fa crescere la tua community. Crea, condividi, colleziona e sfida con le Uova!",
+            "add": "Aggiungi a Discord",
+            "dashboard": "Pannello",
+            "support": "Supporto",
+            "source": "Sorgente"
+        },
         "cta": {
             "title": "Che stai aspettando?",
             "button": "Aggiungi <b>Server Eggs</b>!"

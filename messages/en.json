@@ -49,6 +49,13 @@
                 "desc": "If you decide to <b>support Server Eggs's open source mission</b> for just <i>2 USD/mo</i> (the minimum price that Discord allows), you can have some <b>extra perks</b>, such as <b>receiving a new Egg to your collection every day</b>, <b>higher chances to find secret Eggs</b>, and <b>nicer rate-limits</b>!"
             }
         },
+        "embed": {
+            "description": "A silly content-sharing Discord bot that grows your community. Create, share, collect, and battle with Eggs!",
+            "add": "Add to Discord",
+            "dashboard": "Dashboard",
+            "support": "Support",
+            "source": "Source"
+        },
         "cta": {
             "title": "What are you waiting for?",
             "button": "Add <b>Server Eggs</b>!"
