@@ -29,7 +29,7 @@ export default defineConfig({
     ],
     server: {
         allowedHosts: [
-            "eggs.preview.hexa.blue"
+            ".hexa.blue"
         ]
     }
 });
