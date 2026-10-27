@@ -7,9 +7,9 @@
     import seggs from "$lib/assets/seggs.svg";
     import banner from "$lib/assets/banner.png";
 
-    import card0 from "$lib/assets/cards/card0.png";
-    import card1 from "$lib/assets/cards/card1.png";
-    import card2 from "$lib/assets/cards/card2.png";
+    import card0 from "$lib/assets/cards/card0.webp";
+    import card1 from "$lib/assets/cards/card1.webp";
+    import card2 from "$lib/assets/cards/card2.webp";
 
     const DISCOVERY_URL = "https://discord.com/discovery/applications/886686500845138041";
 
@@ -24,9 +24,9 @@
     };
 
     const cards = [
-        { src: card0, alt: "Promotional Card 1" },
-        { src: card1, alt: "Promotional Card 2" },
-        { src: card2, alt: "Promotional Card 3" }
+        { src: card0, alt: "Promotional Card 1", width: 512, height: 799 },
+        { src: card1, alt: "Promotional Card 2", width: 488, height: 660 },
+        { src: card2, alt: "Promotional Card 3", width: 462, height: 866 }
     ];
 
     let raised = $state<number | null>(null);
@@ -87,7 +87,13 @@
                             if (raised === i) raised = null;
                         }}
                     >
-                        <img src={card.src} alt={card.alt} />
+                        <img
+                            src={card.src}
+                            alt={card.alt}
+                            width={card.width}
+                            height={card.height}
+                            decoding="async"
+                        />
                     </a>
                 {/each}
             </span>
