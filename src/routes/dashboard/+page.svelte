@@ -6,6 +6,7 @@
 
 <svelte:head>
     <title>{m["dashboard.title"]()}</title>
+    <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 <main class="flex flex-1 flex-col items-center justify-center">
     <div class="sect">

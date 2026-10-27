@@ -48,9 +48,9 @@
 
 <main>
     {#snippet ctabtn()}
-        <button id="cta" onclick={() => window.open(DISCOVERY_URL, "_blank")}>
+        <a class="cta" href={DISCOVERY_URL} target="_blank" rel="noopener">
             {@html m["home.cta.button"]()}
-        </button>
+        </a>
     {/snippet}
 
     <section class="intro">
@@ -201,7 +201,7 @@
         }
     }
 
-    #cta {
+    .cta {
         @apply mt-3 w-fit justify-self-center bg-blurple p-4 hover:bg-blurple-dark sm:p-6 md:mt-6;
         @apply rounded-2xl border border-transparent hover:border-white;
         @apply text-2xl;

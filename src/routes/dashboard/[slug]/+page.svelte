@@ -213,6 +213,7 @@
 
 <svelte:head>
     <title>{m["dashboard.slug.title"]({ name: data.guild.name })}</title>
+    <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <main class="flex flex-col items-center">

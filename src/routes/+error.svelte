@@ -10,6 +10,11 @@
     }
 </script>
 
+<svelte:head>
+    <title>{page.status} - {m.seggs()}</title>
+    <meta name="robots" content="noindex" />
+</svelte:head>
+
 <main class="flex flex-1 flex-col items-center justify-center">
     <span class="mb-6">
         <h1 class="text-6xl font-extrabold">
