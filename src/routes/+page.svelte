@@ -1,5 +1,6 @@
 <script lang="ts">
     import { resolve } from "$app/paths";
+    import { localeHref } from "$lib";
     import { m } from "$lib/paraglide/messages";
 
     import DiscordEmbed from "$lib/components/discord-embed.svelte";
@@ -40,7 +41,7 @@
     images={[banner]}
     primaryButton={{ label: m["home.embed.add"](), url: DISCOVERY_URL }}
     buttons={[
-        { label: m["home.embed.dashboard"](), url: resolve("/dashboard") },
+        { label: m["home.embed.dashboard"](), url: localeHref(resolve("/dashboard")) },
         { label: m["home.embed.support"](), url: "https://discord.gg/G9vfEZGZnT" },
         { label: m["home.embed.source"](), url: "https://github.com/WeAreHexaBlue/ServerEggs" }
     ]}
@@ -66,7 +67,7 @@
             <span class="deck">
                 {#each cards as card, i (card.src)}
                     <a
-                        href={resolve("/#features")}
+                        href={localeHref(resolve("/#features"))}
                         class="card"
                         class:raised={raised === i}
                         style:--slot={i + 1}

@@ -1,5 +1,8 @@
 <script lang="ts">
     import { resolve } from "$app/paths";
+    import { goto } from "$app/navigation";
+    import { page } from "$app/state";
+    import { localeHref } from "$lib";
     import { authClient } from "$lib/auth-client";
 
     import { m } from "$lib/paraglide/messages";
@@ -10,7 +13,7 @@
 
     import logo from "$lib/assets/seggs.svg";
 
-    import { getLocale, locales, setLocale, type Locale } from "$lib/paraglide/runtime";
+    import { getLocale, locales, type Locale } from "$lib/paraglide/runtime";
 
     const LOCALE_NAMES: Record<Locale, string> = {
         en: "English",
@@ -19,10 +22,14 @@
 
     const session = authClient.useSession();
 
+    function switchLocale(locale: Locale) {
+        goto(localeHref(page.url.pathname + page.url.search, locale));
+    }
+
     async function login() {
         await authClient.signIn.social({
             provider: "discord",
-            callbackURL: resolve("/")
+            callbackURL: localeHref(resolve("/"))
         });
     }
 
@@ -62,7 +69,7 @@
 <svelte:window onkeydown={handleKeydown} onresize={handleResize} />
 
 {#snippet brand()}
-    <a href={resolve("/")} class="brand" onclick={closeMenu}>
+    <a href={localeHref(resolve("/"))} class="brand" onclick={closeMenu}>
         <img src={logo} class="size-10 sm:size-15" alt="Server Eggs Logo" />
         <h1 class="hidden title sm:inline">{m.seggs()}</h1>
         <h1 class="title sm:hidden">{m.seggs_short()}</h1>
@@ -71,7 +78,7 @@
 
 {#snippet links(vertical = false)}
     <span class="links" class:vertical>
-        <a href={resolve("/dashboard")} onclick={closeMenu}>{m["nav.dash"]()}</a>
+        <a href={localeHref(resolve("/dashboard"))} onclick={closeMenu}>{m["nav.dash"]()}</a>
         <a href="https://discord.gg/G9vfEZGZnT" target="_blank" onclick={closeMenu}
             >{m["nav.support"]()}</a
         >
@@ -122,7 +129,7 @@
         name="lang"
         class="lang rounded-md"
         aria-label="Language"
-        onchange={(e) => setLocale(e.currentTarget.value as Locale)}
+        onchange={(e) => switchLocale(e.currentTarget.value as Locale)}
     >
         {#each locales as locale (locale)}
             <option

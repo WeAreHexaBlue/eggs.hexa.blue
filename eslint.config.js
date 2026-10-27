@@ -37,7 +37,14 @@ export default defineConfig(
         // Override or add rule settings here, such as:
         // 'svelte/button-has-type': 'error'
         rules: {
-            "svelte/no-at-html-tags": "off"
+            "svelte/no-at-html-tags": "off",
+            // Internal links and navigation go through `localeHref(resolve(...))` so the
+            // active locale is kept in the URL. This rule only recognises a bare
+            // `resolve()` call and cannot see through that wrapper.
+            "svelte/no-navigation-without-resolve": [
+                "error",
+                { ignoreLinks: true, ignoreGoto: true }
+            ]
         }
     }
 );

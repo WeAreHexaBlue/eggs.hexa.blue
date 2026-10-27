@@ -1,4 +1,5 @@
 import { fail, redirect } from "@sveltejs/kit";
+import { localizeHref } from "$lib/paraglide/runtime";
 import { eq, sql } from "drizzle-orm";
 
 import { RATINGS } from "$lib";
@@ -135,7 +136,7 @@ function parseChannelRatingsInput(
 }
 
 export async function load({ locals, request, params }) {
-    if (!/^\d+$/.test(params.slug)) redirect(303, "/dashboard");
+    if (!/^\d+$/.test(params.slug)) redirect(303, localizeHref("/dashboard"));
     if (!locals.user) await protect(request, `/dashboard/${params.slug}`);
 
     const userGuild = await getGuild(locals, request, params);

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { page } from "$app/state";
     import { resolve } from "$app/paths";
+    import { localeHref } from "$lib";
     import { m } from "$lib/paraglide/messages";
 
     function back(e: MouseEvent) {
@@ -19,7 +20,7 @@
             {page.error?.message}
         </p>
     </span>
-    <a href={resolve("/")} onclick={back} class="hover:gradtxt text-2xl underline">
+    <a href={localeHref(resolve("/"))} onclick={back} class="hover:gradtxt text-2xl underline">
         {m.back()}
     </a>
 </main>

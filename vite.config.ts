@@ -8,6 +8,9 @@ export default defineConfig({
     plugins: [
         tailwindcss(),
         sveltekit({
+            // Root-relative links keep localized URLs unambiguous.
+            paths: { relative: false },
+
             compilerOptions: {
                 // Force runes mode for the project, except for libraries. Can be removed in svelte 6.
                 runes: ({ filename }) =>
@@ -24,7 +27,9 @@ export default defineConfig({
         paraglideVitePlugin({
             project: "./project.inlang",
             outdir: "./src/lib/paraglide",
-            emitTsDeclarations: true
+            emitTsDeclarations: true,
+            strategy: ["url", "baseLocale"],
+            trailingSlash: "never"
         })
     ],
     server: {
