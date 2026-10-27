@@ -3,7 +3,7 @@ import { building } from "$app/environment";
 import { auth } from "$lib/server/auth";
 import { svelteKitHandler } from "better-auth/svelte-kit";
 import type { Handle } from "@sveltejs/kit";
-import { getTextDirection } from "$lib/paraglide/runtime";
+import { deLocalizeUrl, getTextDirection } from "$lib/paraglide/runtime";
 import { paraglideMiddleware } from "$lib/paraglide/server";
 
 const handleParaglide: Handle = ({ event, resolve }) =>
@@ -18,6 +18,17 @@ const handleParaglide: Handle = ({ event, resolve }) =>
         });
     });
 
+// The dashboard is per-user and must never show up in search results.
+const handlePrivateNoindex: Handle = async ({ event, resolve }) => {
+    const response = await resolve(event);
+
+    if (deLocalizeUrl(event.url).pathname.startsWith("/dashboard")) {
+        response.headers.set("x-robots-tag", "noindex, nofollow");
+    }
+
+    return response;
+};
+
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
     const session = await auth.api.getSession({ headers: event.request.headers });
 
@@ -29,4 +40,8 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
     return svelteKitHandler({ event, resolve, auth, building });
 };
 
-export const handle: Handle = sequence(handleParaglide, handleBetterAuth);
+export const handle: Handle = sequence(
+    handleParaglide,
+    handlePrivateNoindex,
+    handleBetterAuth
+);

@@ -10,7 +10,7 @@ import { redirect } from "@sveltejs/kit";
 import { localizeHref } from "$lib/paraglide/runtime";
 
 export async function load({ locals, request, url }) {
-    if (!locals.user) await protect(request, `/dashboard${url.search}`);
+    if (!locals.user) await protect(request, localizeHref(`/dashboard${url.search}`));
 
     const newGuild = url.searchParams.get("guild_id");
 
