@@ -59,6 +59,11 @@
         "cta": {
             "title": "Che stai aspettando?",
             "button": "Aggiungi <b>Server Eggs</b>!"
+        },
+        "cards": {
+            "one": "Il bot Server Eggs mostra su Discord lo stato di raccolta e le vittorie in battaglia di un Uovo",
+            "two": "Un Uovo appena creato con una GIF, condiviso tramite il bot Server Eggs su Discord",
+            "three": "Un Uovo dorato raccolto, creato da un altro server e mostrato dal bot Server Eggs"
         }
     },
     "dashboard": {

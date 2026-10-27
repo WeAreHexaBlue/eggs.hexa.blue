@@ -59,6 +59,11 @@
         "cta": {
             "title": "What are you waiting for?",
             "button": "Add <b>Server Eggs</b>!"
+        },
+        "cards": {
+            "one": "The Server Eggs bot showing an Egg's collection status and battle wins in Discord",
+            "two": "A newly created Egg with a GIF, shared through the Server Eggs Discord bot",
+            "three": "A collected golden Egg created by another server, shown by the Server Eggs bot"
         }
     },
     "dashboard": {

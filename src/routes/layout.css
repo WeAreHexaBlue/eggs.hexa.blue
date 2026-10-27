@@ -19,7 +19,8 @@
             }
         }
 
-        h1 {
+        h1,
+        h2 {
             @apply text-4xl font-semibold;
         }
 

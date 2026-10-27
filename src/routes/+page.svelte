@@ -15,9 +15,9 @@
     const DISCOVERY_URL = "https://discord.com/discovery/applications/886686500845138041";
 
     const cards = [
-        { src: card0, alt: "Promotional Card 1" },
-        { src: card1, alt: "Promotional Card 2" },
-        { src: card2, alt: "Promotional Card 3" }
+        { src: card0, alt: m["home.cards.one"]() },
+        { src: card1, alt: m["home.cards.two"]() },
+        { src: card2, alt: m["home.cards.three"]() }
     ];
 
     let raised = $state<number | null>(null);
@@ -64,7 +64,7 @@
             {@render ctabtn()}
         </span>
         <span class="flex items-center justify-center">
-            <img src={seggs} class="egg -rotate-12" alt="Egg" />
+            <img src={seggs} class="egg -rotate-12" alt="" aria-hidden="true" />
             <span class="deck">
                 {#each cards as card, i (card.src)}
                     <a
@@ -82,47 +82,47 @@
                     </a>
                 {/each}
             </span>
-            <img src={seggs} class="egg rotate-12" alt="Egg" />
+            <img src={seggs} class="egg rotate-12" alt="" aria-hidden="true" />
         </span>
     </section>
 
     <section id="about" class="sect">
-        <h1>{m["home.about.title"]()}</h1>
+        <h2>{m["home.about.title"]()}</h2>
         <p>{@html m["home.about.desc"]()}</p>
     </section>
 
     <section id="features" class="sect">
-        <h1>{m["home.features.title"]()}</h1>
+        <h2>{m["home.features.title"]()}</h2>
         <span class="spangrid grid-cols-1 xl:grid-cols-3">
             <span>
-                <h1>{m["home.features.fun.title"]()}</h1>
+                <h2>{m["home.features.fun.title"]()}</h2>
                 <p>{@html m["home.features.fun.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.customizable.title"]()}</h1>
+                <h2>{m["home.features.customizable.title"]()}</h2>
                 <p>{@html m["home.features.customizable.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.friendly.title"]()}</h1>
+                <h2>{m["home.features.friendly.title"]()}</h2>
                 <p>{@html m["home.features.friendly.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.mod.title"]()}</h1>
+                <h2>{m["home.features.mod.title"]()}</h2>
                 <p>{@html m["home.features.mod.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.extras.title"]()}</h1>
+                <h2>{m["home.features.extras.title"]()}</h2>
                 <p>{@html m["home.features.extras.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.premium.title"]()}</h1>
+                <h2>{m["home.features.premium.title"]()}</h2>
                 <p>{@html m["home.features.premium.desc"]()}</p>
             </span>
         </span>
     </section>
 
     <section class="sect">
-        <h1>{m["home.cta.title"]()}</h1>
+        <h2>{m["home.cta.title"]()}</h2>
         {@render ctabtn()}
     </section>
 </main>
