@@ -13,6 +13,16 @@
 
     const DISCOVERY_URL = "https://discord.com/discovery/applications/886686500845138041";
 
+    const softwareApplication = {
+        "@type": "SoftwareApplication",
+        name: "Server Eggs",
+        applicationCategory: "SocialNetworkingApplication",
+        operatingSystem: "Discord",
+        url: "https://eggs.hexa.blue/",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        sameAs: ["https://github.com/WeAreHexaBlue/ServerEggs"]
+    };
+
     const cards = [
         { src: card0, alt: "Promotional Card 1" },
         { src: card1, alt: "Promotional Card 2" },
@@ -38,6 +48,7 @@
     title={m.seggs()}
     description={m["home.embed.description"]()}
     images={[banner]}
+    schemas={[softwareApplication]}
     primaryButton={{ label: m["home.embed.add"](), url: DISCOVERY_URL }}
     buttons={[
         { label: m["home.embed.dashboard"](), url: resolve("/dashboard") },

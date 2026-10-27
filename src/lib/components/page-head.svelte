@@ -22,6 +22,7 @@
         primaryButton?: EmbedButton;
         siteName?: string;
         accentColor?: number;
+        schemas?: Record<string, unknown>[];
     };
 
     let {
@@ -32,7 +33,8 @@
         buttons = [],
         primaryButton,
         siteName = "Server Eggs",
-        accentColor = 0x5965f2
+        accentColor = 0x5965f2,
+        schemas = []
     }: Props = $props();
 
     const OG_LOCALES: Record<string, string> = {
@@ -156,6 +158,39 @@
     const fallbackImage = $derived(image ?? images[0]);
     const fallbackImageUrl = $derived(fallbackImage ? absoluteUrl(fallbackImage) : undefined);
     const themeColor = $derived(`#${accentColor.toString(16).padStart(6, "0")}`);
+
+    const organizationId = `${page.url.origin}/#organization`;
+
+    const structuredData = $derived.by(() => {
+        const graph: Record<string, unknown>[] = [
+            {
+                "@type": "Organization",
+                "@id": organizationId,
+                name: "HexaBlue",
+                url: "https://hexa.blue/",
+                logo: "https://hexa.blue/logo.svg",
+                sameAs: ["https://github.com/WeAreHexaBlue"]
+            },
+            {
+                "@type": "WebSite",
+                "@id": `${page.url.origin}/#website`,
+                name: siteName,
+                url: page.url.origin,
+                inLanguage: currentLocale,
+                publisher: { "@id": organizationId }
+            },
+            ...schemas
+        ];
+
+        return JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replaceAll(
+            "<",
+            "\\u003c"
+        );
+    });
+
+    const structuredDataTag = $derived(
+        `<script type="application/ld+json">${structuredData}${closingTag}`
+    );
 </script>
 
 <svelte:head>
@@ -194,4 +229,5 @@
     {/if}
 
     {@html embedTag}
+    {@html structuredDataTag}
 </svelte:head>
