@@ -164,5 +164,9 @@
     },
     "footer": {
         "desc": "<b>Server Eggs</b>, come tutto il software HexaBlue, è libero sotto la <i>GNU General Public License 3.0</i>"
+    },
+    "seo": {
+        "description": "Server Eggs è un bot Discord gratuito e open source per creare, condividere, collezionare e sfidare le Uova create dagli utenti. Fai crescere la tua community con i contenuti dei tuoi membri.",
+        "title": "Server Eggs - Bot Discord per creare, condividere e sfidare Uova"
     }
 }

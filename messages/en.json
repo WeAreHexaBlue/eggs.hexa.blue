@@ -164,5 +164,9 @@
     },
     "footer": {
         "desc": "<b>Server Eggs</b>, like all HexaBlue software, is free under the <i>GNU General Public License 3.0</i>"
+    },
+    "seo": {
+        "description": "Server Eggs is a free, open-source Discord bot for creating, sharing, collecting, and battling with user-made Eggs. Grow your community with content your members create.",
+        "title": "Server Eggs - Discord bot to create, share and battle Eggs"
     }
 }

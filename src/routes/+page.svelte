@@ -32,13 +32,14 @@
 </script>
 
 <svelte:head>
-    <title>{m.seggs()}</title>
+    <title>{m["seo.title"]()}</title>
 </svelte:head>
 
 <DiscordEmbed
     title={m.seggs()}
     description={m["home.embed.description"]()}
     images={[banner]}
+    imageAlt={m["seo.description"]()}
     primaryButton={{ label: m["home.embed.add"](), url: DISCOVERY_URL }}
     buttons={[
         { label: m["home.embed.dashboard"](), url: localeHref(resolve("/dashboard")) },
