@@ -1,5 +1,6 @@
 <script lang="ts">
     import { resolve } from "$app/paths";
+    import { page } from "$app/state";
     import { authClient } from "$lib/auth-client";
 
     import { m } from "$lib/paraglide/messages";
@@ -63,7 +64,7 @@
 
 {#snippet brand()}
     <a href={resolve("/")} class="brand" onclick={closeMenu}>
-        <img src={logo} class="size-10 sm:size-15" alt="Server Eggs Logo" />
+        <img src={logo} class="size-10 sm:size-15" alt="" />
         <span class="hidden title sm:inline">{m.seggs()}</span>
         <span class="title sm:hidden">{m.seggs_short()}</span>
     </a>
@@ -71,7 +72,11 @@
 
 {#snippet links(vertical = false)}
     <span class="links" class:vertical>
-        <a href={resolve("/dashboard")} onclick={closeMenu}>{m["nav.dash"]()}</a>
+        <a
+            href={resolve("/dashboard")}
+            onclick={closeMenu}
+            aria-current={page.route.id === "/dashboard" ? "page" : undefined}>{m["nav.dash"]()}</a
+        >
         <a href="https://discord.gg/G9vfEZGZnT" target="_blank" onclick={closeMenu}
             >{m["nav.support"]()}</a
         >
@@ -83,12 +88,13 @@
 
 {#snippet sessionManager()}
     {#if $session.isPending}
-        <span class="pfp-skeleton" aria-hidden="true" aria-label="Loading..."></span>
+        <span class="pfp-skeleton" aria-hidden="true"></span>
     {:else if $session.data?.user}
         <button
             class="pfp"
             class:bg-mist-700={!$session.data.user.image}
             popovertarget="acc-actions"
+            aria-label={$session.data.user.name || m["a11y.account"]()}
         >
             {#if $session.data.user.image}
                 <img src={$session.data.user.image} alt="" referrerpolicy="no-referrer" />
@@ -121,7 +127,7 @@
     <select
         name="lang"
         class="lang rounded-md"
-        aria-label="Language"
+        aria-label={m["a11y.language"]()}
         onchange={(e) => setLocale(e.currentTarget.value as Locale)}
     >
         {#each locales as locale (locale)}

@@ -73,7 +73,7 @@
             {@render ctabtn()}
         </span>
         <span class="flex items-center justify-center">
-            <img src={seggs} class="egg -rotate-12" alt="Egg" />
+            <img src={seggs} class="egg -rotate-12" alt="" />
             <span class="deck">
                 {#each cards as card, i (card.src)}
                     <a
@@ -97,7 +97,7 @@
                     </a>
                 {/each}
             </span>
-            <img src={seggs} class="egg rotate-12" alt="Egg" />
+            <img src={seggs} class="egg rotate-12" alt="" />
         </span>
     </section>
 

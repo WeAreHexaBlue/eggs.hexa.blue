@@ -9,14 +9,14 @@
 <footer class="footer">
     <span class="flex items-center gap-4">
         <a href={resolve("/")} class="brand">
-            <img src={seggsFlat} class="size-15" alt="Server Eggs Logo" />
+            <img src={seggsFlat} class="size-15" alt="" />
             <span class="hidden title md:block">{m.seggs()}</span>
         </a>
 
         <span class="separator" aria-hidden="true"></span>
 
         <a href="https://hexa.blue/" class="brand">
-            <img src={hbWhite} class="size-15" alt="HexaBlue Logo" />
+            <img src={hbWhite} class="size-15" alt="" />
             <span class="hidden font-inter title font-black md:block">{m.hexablue()}</span>
         </a>
     </span>

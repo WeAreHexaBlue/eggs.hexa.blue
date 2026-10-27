@@ -69,6 +69,20 @@ body {
     @apply overflow-x-hidden;
 }
 
+:where(a, button, select, summary, [tabindex]):focus-visible {
+    outline: 3px solid white;
+    outline-offset: 3px;
+}
+
+.skip {
+    @apply fixed top-4 left-4 z-[60] rounded-lg bg-white px-4 py-2 font-semibold text-mist-900 shadow-lg;
+    @apply -translate-y-24 transition-transform;
+
+    &:focus-visible {
+        @apply translate-y-0;
+    }
+}
+
 ul {
     @apply pl-0;
 }
