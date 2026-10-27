@@ -2,7 +2,7 @@
     import { resolve } from "$app/paths";
     import { m } from "$lib/paraglide/messages";
 
-    import DiscordEmbed from "$lib/components/discord-embed.svelte";
+    import PageHead from "$lib/components/page-head.svelte";
 
     import seggs from "$lib/assets/seggs.svg";
     import banner from "$lib/assets/banner.png";
@@ -34,7 +34,7 @@
     <title>{m.seggs()}</title>
 </svelte:head>
 
-<DiscordEmbed
+<PageHead
     title={m.seggs()}
     description={m["home.embed.description"]()}
     images={[banner]}
