@@ -2,21 +2,31 @@
     import { resolve } from "$app/paths";
     import { m } from "$lib/paraglide/messages";
 
-    import DiscordEmbed from "$lib/components/discord-embed.svelte";
+    import PageHead from "$lib/components/page-head.svelte";
 
     import seggs from "$lib/assets/seggs.svg";
     import banner from "$lib/assets/banner.png";
 
-    import card0 from "$lib/assets/cards/card0.png";
-    import card1 from "$lib/assets/cards/card1.png";
-    import card2 from "$lib/assets/cards/card2.png";
+    import card0 from "$lib/assets/cards/card0.webp";
+    import card1 from "$lib/assets/cards/card1.webp";
+    import card2 from "$lib/assets/cards/card2.webp";
 
     const DISCOVERY_URL = "https://discord.com/discovery/applications/886686500845138041";
 
+    const softwareApplication = {
+        "@type": "SoftwareApplication",
+        name: "Server Eggs",
+        applicationCategory: "SocialNetworkingApplication",
+        operatingSystem: "Discord",
+        url: "https://eggs.hexa.blue/",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        sameAs: ["https://github.com/WeAreHexaBlue/ServerEggs"]
+    };
+
     const cards = [
-        { src: card0, alt: "Promotional Card 1" },
-        { src: card1, alt: "Promotional Card 2" },
-        { src: card2, alt: "Promotional Card 3" }
+        { src: card0, alt: "Promotional Card 1", width: 512, height: 799 },
+        { src: card1, alt: "Promotional Card 2", width: 488, height: 660 },
+        { src: card2, alt: "Promotional Card 3", width: 462, height: 866 }
     ];
 
     let raised = $state<number | null>(null);
@@ -34,10 +44,11 @@
     <title>{m.seggs()}</title>
 </svelte:head>
 
-<DiscordEmbed
+<PageHead
     title={m.seggs()}
     description={m["home.embed.description"]()}
     images={[banner]}
+    schemas={[softwareApplication]}
     primaryButton={{ label: m["home.embed.add"](), url: DISCOVERY_URL }}
     buttons={[
         { label: m["home.embed.dashboard"](), url: resolve("/dashboard") },
@@ -48,9 +59,9 @@
 
 <main>
     {#snippet ctabtn()}
-        <button id="cta" onclick={() => window.open(DISCOVERY_URL, "_blank")}>
+        <a class="cta" href={DISCOVERY_URL} target="_blank" rel="noopener">
             {@html m["home.cta.button"]()}
-        </button>
+        </a>
     {/snippet}
 
     <section class="intro">
@@ -62,7 +73,7 @@
             {@render ctabtn()}
         </span>
         <span class="flex items-center justify-center">
-            <img src={seggs} class="egg -rotate-12" alt="Egg" />
+            <img src={seggs} class="egg -rotate-12" alt="" />
             <span class="deck">
                 {#each cards as card, i (card.src)}
                     <a
@@ -76,51 +87,57 @@
                             if (raised === i) raised = null;
                         }}
                     >
-                        <img src={card.src} alt={card.alt} />
+                        <img
+                            src={card.src}
+                            alt={card.alt}
+                            width={card.width}
+                            height={card.height}
+                            decoding="async"
+                        />
                     </a>
                 {/each}
             </span>
-            <img src={seggs} class="egg rotate-12" alt="Egg" />
+            <img src={seggs} class="egg rotate-12" alt="" />
         </span>
     </section>
 
     <section id="about" class="sect">
-        <h1>{m["home.about.title"]()}</h1>
+        <h2>{m["home.about.title"]()}</h2>
         <p>{@html m["home.about.desc"]()}</p>
     </section>
 
     <section id="features" class="sect">
-        <h1>{m["home.features.title"]()}</h1>
+        <h2>{m["home.features.title"]()}</h2>
         <span class="spangrid grid-cols-1 xl:grid-cols-3">
             <span>
-                <h1>{m["home.features.fun.title"]()}</h1>
+                <h3>{m["home.features.fun.title"]()}</h3>
                 <p>{@html m["home.features.fun.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.customizable.title"]()}</h1>
+                <h3>{m["home.features.customizable.title"]()}</h3>
                 <p>{@html m["home.features.customizable.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.friendly.title"]()}</h1>
+                <h3>{m["home.features.friendly.title"]()}</h3>
                 <p>{@html m["home.features.friendly.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.mod.title"]()}</h1>
+                <h3>{m["home.features.mod.title"]()}</h3>
                 <p>{@html m["home.features.mod.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.extras.title"]()}</h1>
+                <h3>{m["home.features.extras.title"]()}</h3>
                 <p>{@html m["home.features.extras.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.premium.title"]()}</h1>
+                <h3>{m["home.features.premium.title"]()}</h3>
                 <p>{@html m["home.features.premium.desc"]()}</p>
             </span>
         </span>
     </section>
 
     <section class="sect">
-        <h1>{m["home.cta.title"]()}</h1>
+        <h2>{m["home.cta.title"]()}</h2>
         {@render ctabtn()}
     </section>
 </main>
@@ -201,7 +218,7 @@
         }
     }
 
-    #cta {
+    .cta {
         @apply mt-3 w-fit justify-self-center bg-blurple p-4 hover:bg-blurple-dark sm:p-6 md:mt-6;
         @apply rounded-2xl border border-transparent hover:border-white;
         @apply text-2xl;

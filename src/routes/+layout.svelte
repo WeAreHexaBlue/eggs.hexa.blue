@@ -3,6 +3,7 @@
     import { resolve } from "$app/paths";
     import { page } from "$app/state";
     import { locales, localizeHref } from "$lib/paraglide/runtime";
+    import { m } from "$lib/paraglide/messages";
     import "./layout.css";
     import favicon from "$lib/assets/favicon.svg";
 
@@ -13,9 +14,10 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<a href="#content" class="skip">{m["a11y.skip"]()}</a>
 <div class="flex min-h-screen flex-col">
     <Navigation />
-    <div class="flex flex-1 flex-col pt-40">
+    <div id="content" class="flex flex-1 flex-col pt-40" tabindex="-1">
         {@render children()}
     </div>
     <Footer />

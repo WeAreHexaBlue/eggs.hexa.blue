@@ -1,5 +1,10 @@
 {
     "$schema": "https://inlang.com/schema/inlang-message-format",
+    "a11y": {
+        "skip": "Vai al contenuto",
+        "language": "Lingua",
+        "account": "Account"
+    },
     "seggs": "Server Eggs",
     "seggs_short": "Eggs",
     "hexablue": "HexaBlue",
