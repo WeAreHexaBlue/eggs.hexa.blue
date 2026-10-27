@@ -64,8 +64,8 @@
 {#snippet brand()}
     <a href={resolve("/")} class="brand" onclick={closeMenu}>
         <img src={logo} class="size-10 sm:size-15" alt="Server Eggs Logo" />
-        <h1 class="hidden title sm:inline">{m.seggs()}</h1>
-        <h1 class="title sm:hidden">{m.seggs_short()}</h1>
+        <span class="hidden title sm:inline">{m.seggs()}</span>
+        <span class="title sm:hidden">{m.seggs_short()}</span>
     </a>
 {/snippet}
 

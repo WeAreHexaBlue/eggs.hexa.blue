@@ -96,42 +96,42 @@
     </section>
 
     <section id="about" class="sect">
-        <h1>{m["home.about.title"]()}</h1>
+        <h2>{m["home.about.title"]()}</h2>
         <p>{@html m["home.about.desc"]()}</p>
     </section>
 
     <section id="features" class="sect">
-        <h1>{m["home.features.title"]()}</h1>
+        <h2>{m["home.features.title"]()}</h2>
         <span class="spangrid grid-cols-1 xl:grid-cols-3">
             <span>
-                <h1>{m["home.features.fun.title"]()}</h1>
+                <h3>{m["home.features.fun.title"]()}</h3>
                 <p>{@html m["home.features.fun.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.customizable.title"]()}</h1>
+                <h3>{m["home.features.customizable.title"]()}</h3>
                 <p>{@html m["home.features.customizable.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.friendly.title"]()}</h1>
+                <h3>{m["home.features.friendly.title"]()}</h3>
                 <p>{@html m["home.features.friendly.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.mod.title"]()}</h1>
+                <h3>{m["home.features.mod.title"]()}</h3>
                 <p>{@html m["home.features.mod.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.extras.title"]()}</h1>
+                <h3>{m["home.features.extras.title"]()}</h3>
                 <p>{@html m["home.features.extras.desc"]()}</p>
             </span>
             <span>
-                <h1>{m["home.features.premium.title"]()}</h1>
+                <h3>{m["home.features.premium.title"]()}</h3>
                 <p>{@html m["home.features.premium.desc"]()}</p>
             </span>
         </span>
     </section>
 
     <section class="sect">
-        <h1>{m["home.cta.title"]()}</h1>
+        <h2>{m["home.cta.title"]()}</h2>
         {@render ctabtn()}
     </section>
 </main>
