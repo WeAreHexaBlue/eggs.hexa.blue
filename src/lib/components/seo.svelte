@@ -61,10 +61,7 @@
                     name: "HexaBlue",
                     url: "https://hexa.blue/",
                     logo: "https://hexa.blue/logo.svg",
-                    sameAs: [
-                        "https://github.com/WeAreHexaBlue",
-                        "https://discord.gg/DsARcGwwdM"
-                    ]
+                    sameAs: ["https://github.com/WeAreHexaBlue", "https://discord.gg/DsARcGwwdM"]
                 },
                 {
                     "@type": "WebSite",
@@ -92,9 +89,7 @@
     );
 
     // Split so the Svelte parser does not treat this as the end of the script block.
-    const jsonLdTag = $derived(
-        `<script type="application/ld+json">${jsonLd}` + "</" + "script>"
-    );
+    const jsonLdTag = $derived(`<script type="application/ld+json">${jsonLd}` + "</" + "script>");
 </script>
 
 <svelte:head>

@@ -60,10 +60,7 @@
             ...(imageAlt ? { description: imageAlt } : {})
         }));
 
-        const linkText = title
-            .replace(/\\/g, "\\\\")
-            .replace(/\[/g, "\\[")
-            .replace(/\]/g, "\\]");
+        const linkText = title.replace(/\\/g, "\\\\").replace(/\[/g, "\\[").replace(/\]/g, "\\]");
 
         const content = `# [${linkText}](${pageUrl})\n${description}`;
 

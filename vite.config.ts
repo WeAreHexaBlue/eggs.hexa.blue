@@ -33,8 +33,6 @@ export default defineConfig({
         })
     ],
     server: {
-        allowedHosts: [
-            ".hexa.blue"
-        ]
+        allowedHosts: [".hexa.blue"]
     }
 });
