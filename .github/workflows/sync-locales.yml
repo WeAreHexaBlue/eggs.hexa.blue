@@ -36,5 +36,5 @@ jobs:
                   git config user.name "github-actions[bot]"
                   git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
                   git add project.inlang/settings.json
-                  git commit -m "chore(i18n): sync locale list" -m "LLM [Minor]: DeepSeek v4.1 Flash 1017 (Free), High, T3 Code + OpenCode, OpenCode"
+                  git commit -m "chore(i18n): sync locale list"
                   git push origin "HEAD:${{ github.ref_name }}"
