@@ -4,6 +4,7 @@
     import { page } from "$app/state";
     import { locales, localizeHref } from "$lib/paraglide/runtime";
     import { m } from "$lib/paraglide/messages";
+    import { localeName } from "$lib/i18n";
     import "./layout.css";
     import favicon from "$lib/assets/favicon.svg";
 
@@ -25,6 +26,8 @@
 
 <div style="display:none">
     {#each locales as locale (locale)}
-        <a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
+        <a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}
+            >{localeName(locale)}</a
+        >
     {/each}
 </div>

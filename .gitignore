@@ -30,4 +30,5 @@ project.inlang/cache/
 # IDEs and Harnesses
 .vscode
 .opencode
-.github
+.github/agents
+.github/skills

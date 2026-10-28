@@ -1,5 +1,6 @@
 <script lang="ts">
     import { page } from "$app/state";
+    import { ogLocale } from "$lib/i18n";
     import {
         baseLocale,
         deLocalizeHref,
@@ -37,11 +38,6 @@
         schemas = []
     }: Props = $props();
 
-    const OG_LOCALES: Record<string, string> = {
-        en: "en_US",
-        it: "it_IT"
-    };
-
     const absoluteUrl = (value: string) => new URL(value, page.url.origin).href;
 
     function normalizePath(path: string) {
@@ -52,7 +48,7 @@
     const canonicalUrl = $derived(absoluteUrl(canonicalPath));
 
     const currentLocale = getLocale();
-    const ogLocale = $derived(OG_LOCALES[currentLocale] ?? currentLocale);
+    const currentOgLocale = $derived(ogLocale(currentLocale));
 
     const alternates = $derived.by(() => {
         const path = deLocalizeHref(canonicalPath);
@@ -70,7 +66,7 @@
     const alternateOgLocales = $derived(
         alternates
             .filter((alternate) => alternate.locale !== currentLocale)
-            .map((alternate) => OG_LOCALES[alternate.locale] ?? alternate.locale)
+            .map((alternate) => ogLocale(alternate.locale))
     );
 
     // Open Graph descriptions are plain text, while component embeds render markdown.
@@ -209,7 +205,7 @@
     <meta property="og:description" content={plainDescription} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale" content={currentOgLocale} />
     {#each alternateOgLocales as locale (locale)}
         <meta property="og:locale:alternate" content={locale} />
     {/each}
