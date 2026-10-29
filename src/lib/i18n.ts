@@ -1,4 +1,11 @@
+import type { PathnameWithSearchOrHash } from "$app/types";
+import { localizeHref } from "$lib/paraglide/runtime";
+
 const displayNames = new Map<string, Intl.DisplayNames>();
+
+export function localizedHref<T extends PathnameWithSearchOrHash>(path: T): T {
+    return localizeHref(path) as T;
+}
 
 export function localeName(locale: string): string {
     let names = displayNames.get(locale);

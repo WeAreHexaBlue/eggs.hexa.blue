@@ -1,6 +1,7 @@
 <script lang="ts">
     import { resolve } from "$app/paths";
     import { m } from "$lib/paraglide/messages";
+    import { localizedHref } from "$lib/i18n";
 
     import seggsFlat from "$lib/assets/seggs_flat.svg";
     import hbWhite from "$lib/assets/hexablue_white.svg";
@@ -8,7 +9,7 @@
 
 <footer class="footer">
     <span class="flex items-center gap-4">
-        <a href={resolve("/")} class="brand">
+        <a href={resolve(localizedHref("/"))} class="brand">
             <img src={seggsFlat} class="size-15" alt="" />
             <span class="hidden title md:block">{m.seggs()}</span>
         </a>

@@ -4,7 +4,7 @@
     import { authClient } from "$lib/auth-client";
 
     import { m } from "$lib/paraglide/messages";
-    import { localeName } from "$lib/i18n";
+    import { localeName, localizedHref } from "$lib/i18n";
 
     import { fade, fly, slide } from "svelte/transition";
     import { cubicOut } from "svelte/easing";
@@ -19,7 +19,7 @@
     async function login() {
         await authClient.signIn.social({
             provider: "discord",
-            callbackURL: resolve("/")
+            callbackURL: resolve(localizedHref("/"))
         });
     }
 
@@ -30,7 +30,7 @@
             await authClient.signOut({
                 fetchOptions: {
                     onSuccess: () => {
-                        location.href = "/";
+                        location.href = resolve(localizedHref("/"));
                     }
                 }
             });
@@ -59,7 +59,7 @@
 <svelte:window onkeydown={handleKeydown} onresize={handleResize} />
 
 {#snippet brand()}
-    <a href={resolve("/")} class="brand" onclick={closeMenu}>
+    <a href={resolve(localizedHref("/"))} class="brand" onclick={closeMenu}>
         <img src={logo} class="size-10 sm:size-15" alt="" />
         <span class="hidden title sm:inline">{m.seggs()}</span>
         <span class="title sm:hidden">{m.seggs_short()}</span>
@@ -69,7 +69,7 @@
 {#snippet links(vertical = false)}
     <span class="links" class:vertical>
         <a
-            href={resolve("/dashboard")}
+            href={resolve(localizedHref("/dashboard"))}
             onclick={closeMenu}
             aria-current={page.route.id === "/dashboard" ? "page" : undefined}>{m["nav.dash"]()}</a
         >

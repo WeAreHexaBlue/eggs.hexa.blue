@@ -2,11 +2,12 @@
     import { page } from "$app/state";
     import { resolve } from "$app/paths";
     import { m } from "$lib/paraglide/messages";
+    import { localizedHref } from "$lib/i18n";
 
     function back(e: MouseEvent) {
         e.preventDefault();
         if (window.history.length > 1) window.history.back();
-        else window.location.href = "/";
+        else window.location.href = resolve(localizedHref("/"));
     }
 </script>
 
@@ -24,7 +25,7 @@
             {page.error?.message}
         </p>
     </span>
-    <a href={resolve("/")} onclick={back} class="hover:gradtxt text-2xl underline">
+    <a href={resolve(localizedHref("/"))} onclick={back} class="hover:gradtxt text-2xl underline">
         {m.back()}
     </a>
 </main>

@@ -2,6 +2,7 @@ import { auth } from "./auth";
 import { error, redirect } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { account } from "$lib/server/db/auth-schema";
+import { localizedHref } from "$lib/i18n";
 import { and, eq } from "drizzle-orm";
 import { env } from "$env/dynamic/private";
 
@@ -21,7 +22,6 @@ function botHeaders(extra: Record<string, string> = {}): Record<string, string> 
     return { Authorization: `Bot ${env.DISCORD_TOKEN}`, ...extra };
 }
 
-/** CDN URL for a guild's icon, or null when it has none. */
 export function guildIconUrl(
     guildId: string,
     icon: string | null | undefined,
@@ -60,7 +60,7 @@ export async function protect(request: Request, callback: string): Promise<never
 
     if (res.url) redirect(302, res.url);
 
-    redirect(307, "/");
+    redirect(307, localizedHref("/"));
 }
 
 async function getDiscordAccount(userId: string): Promise<DiscordAccount | undefined> {
@@ -186,7 +186,11 @@ export async function getGuilds(
     request: Request,
     slug?: string
 ): Promise<DiscordPartialGuild[]> {
-    return fetchUserGuilds(locals, request, slug ? `/dashboard/${slug}` : "/dashboard");
+    return fetchUserGuilds(
+        locals,
+        request,
+        slug ? localizedHref(`/dashboard/${slug}`) : localizedHref("/dashboard")
+    );
 }
 
 export async function getGuild(
@@ -279,8 +283,7 @@ export async function createGuildInvite(channelId: string): Promise<string | nul
     return null;
 }
 
-/** URL that adds the bot to `guildId`, or to any server when omitted. */
-export function botOAuthUrl(guildId?: string, redirectTo = "/dashboard"): string {
+export function botOAuthUrl(guildId?: string, redirectTo = localizedHref("/dashboard")): string {
     const url = new URL("https://discord.com/oauth2/authorize");
 
     url.searchParams.set("client_id", env.DISCORD_CLIENT_ID ?? "");

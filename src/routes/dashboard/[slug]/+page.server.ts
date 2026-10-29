@@ -2,6 +2,7 @@ import { fail, redirect } from "@sveltejs/kit";
 import { eq, sql } from "drizzle-orm";
 
 import { RATINGS } from "$lib";
+import { localizedHref } from "$lib/i18n";
 import { db } from "$lib/server/db";
 import { getBotLanguages } from "$lib/server/languages";
 import { guild } from "$lib/server/db/bot-schema";
@@ -135,8 +136,8 @@ function parseChannelRatingsInput(
 }
 
 export async function load({ locals, request, params }) {
-    if (!/^\d+$/.test(params.slug)) redirect(303, "/dashboard");
-    if (!locals.user) await protect(request, `/dashboard/${params.slug}`);
+    if (!/^\d+$/.test(params.slug)) redirect(303, localizedHref("/dashboard"));
+    if (!locals.user) await protect(request, localizedHref(`/dashboard/${params.slug}`));
 
     const userGuild = await getGuild(locals, request, params);
     manageCheck(userGuild);

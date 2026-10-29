@@ -1,6 +1,7 @@
 <script lang="ts">
     import { resolve } from "$app/paths";
     import { m } from "$lib/paraglide/messages";
+    import { localizedHref } from "$lib/i18n";
 
     import PageHead from "$lib/components/page-head.svelte";
 
@@ -51,7 +52,7 @@
     schemas={[softwareApplication]}
     primaryButton={{ label: m["home.embed.add"](), url: DISCOVERY_URL }}
     buttons={[
-        { label: m["home.embed.dashboard"](), url: resolve("/dashboard") },
+        { label: m["home.embed.dashboard"](), url: resolve(localizedHref("/dashboard")) },
         { label: m["home.embed.support"](), url: "https://discord.gg/G9vfEZGZnT" },
         { label: m["home.embed.source"](), url: "https://github.com/WeAreHexaBlue/ServerEggs" }
     ]}
@@ -77,7 +78,7 @@
             <span class="deck">
                 {#each cards as card, i (card.src)}
                     <a
-                        href={resolve("/#features")}
+                        href={resolve(localizedHref("/#features"))}
                         class="card"
                         class:raised={raised === i}
                         style:--slot={i + 1}
