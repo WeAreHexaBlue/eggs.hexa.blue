@@ -4,6 +4,7 @@
     import { authClient } from "$lib/auth-client";
 
     import { m } from "$lib/paraglide/messages";
+    import { localeName } from "$lib/i18n";
 
     import { fade, fly, slide } from "svelte/transition";
     import { cubicOut } from "svelte/easing";
@@ -12,11 +13,6 @@
     import logo from "$lib/assets/seggs.svg";
 
     import { getLocale, locales, setLocale, type Locale } from "$lib/paraglide/runtime";
-
-    const LOCALE_NAMES: Record<Locale, string> = {
-        en: "English",
-        it: "Italiano"
-    };
 
     const session = authClient.useSession();
 
@@ -136,7 +132,7 @@
                 class="bg-neutral-900 text-white"
                 selected={getLocale() === locale}
             >
-                {LOCALE_NAMES[locale]}
+                {localeName(locale)}
             </option>
         {/each}
     </select>
